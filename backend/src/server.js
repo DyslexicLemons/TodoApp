@@ -1,10 +1,12 @@
 const { createApp } = require("./app");
 const { connectDB } = require("./config/db");
 const { seedFacts } = require("./seed/seedFacts");
+const { seedSettings } = require("./seed/seedSettings");
 
 async function main() {
   await connectDB();
   await seedFacts();
+  await seedSettings();
 
   const app = createApp();
   const port = process.env.PORT || 4000;
