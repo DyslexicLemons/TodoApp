@@ -8,7 +8,9 @@ services:
       - "27017:27017"
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     restart: unless-stopped
     depends_on:
       - mongo
@@ -18,19 +20,23 @@ services:
     ports:
       - "${BACKEND_PORT:-4000}:4000"
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - ./backend:/app/backend
+      - ./shared:/app/shared
+      - /app/backend/node_modules
 
   frontend:
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
     restart: unless-stopped
     depends_on:
       - backend
     ports:
       - "${FRONTEND_PORT:-4200}:4200"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend:/app/frontend
+      - ./shared:/app/shared
+      - /app/frontend/node_modules
 
 volumes:
   mongo-data:

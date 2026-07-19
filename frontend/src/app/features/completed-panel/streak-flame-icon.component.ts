@@ -1,12 +1,10 @@
 import { Component, Input, computed, signal } from '@angular/core';
+import { flameTierForStreak as sharedFlameTierForStreak } from '../../../../../shared/flameTier';
 
 export type FlameTier = 'small' | 'big' | 'volcano';
 
-/** Matches backend streakService.js FLAME_TIERS thresholds. */
 export function flameTierForStreak(streak: number): FlameTier {
-  if (streak >= 10) return 'volcano';
-  if (streak >= 5) return 'big';
-  return 'small';
+  return sharedFlameTierForStreak(streak) as FlameTier;
 }
 
 @Component({

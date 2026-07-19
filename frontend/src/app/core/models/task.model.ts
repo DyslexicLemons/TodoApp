@@ -1,3 +1,5 @@
+import { startOfWeek, startOfMonth } from '../../../../../shared/dateLogic';
+
 export type TaskLength = 'Quick' | 'Small' | 'Medium' | 'Long-Term';
 export type TaskCategory = 'Health' | 'Working Skills' | 'Personal Skills' | 'Housework' | 'Social' | 'Self-Expression';
 export type TaskFrequency = 'Daily' | 'Weekly' | 'Monthly' | 'One-Time';
@@ -81,23 +83,6 @@ export function formatEstimatedTime(minutes: number): string {
   if (minutes < 60) return `~${Math.round(minutes / 15) * 15} min`;
   const hours = Math.round((minutes / 60) * 2) / 2;
   return `~${hours} hour${hours === 1 ? '' : 's'}`;
-}
-
-/** Monday-based start of the week containing `date`, local time - mirrors backend dateUtil.js. */
-function startOfWeek(date: Date): Date {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  const day = d.getDay();
-  const diffToMonday = (day + 6) % 7;
-  d.setDate(d.getDate() - diffToMonday);
-  return d;
-}
-
-function startOfMonth(date: Date): Date {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  d.setDate(1);
-  return d;
 }
 
 /** How many of a task's completions fall within its current Weekly/Monthly period, for the progress pie. */

@@ -1,18 +1,6 @@
 const { daysBetween, isSameDay } = require("./dateUtil");
 const { periodKey } = require("./frequencyService");
-
-const FLAME_TIERS = {
-  small: { min: 1, max: 4 },
-  big: { min: 5, max: 9 },
-  volcano: { min: 10, max: Infinity },
-};
-
-function flameTierForStreak(streak) {
-  if (streak >= FLAME_TIERS.volcano.min) return "volcano";
-  if (streak >= FLAME_TIERS.big.min) return "big";
-  if (streak >= FLAME_TIERS.small.min) return "small";
-  return "none";
-}
+const { FLAME_TIERS, flameTierForStreak } = require("../../../shared/flameTier");
 
 class AlreadyCompletedTodayError extends Error {
   constructor() {
