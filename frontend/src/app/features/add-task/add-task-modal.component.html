@@ -14,21 +14,13 @@
 
     <div class="grid">
       <label>
-        Difficulty
-        <select formControlName="difficulty">
-          @for (d of difficulties; track d) {
-            <option [value]="d">{{ d }}</option>
-          }
-        </select>
+        Est. hours
+        <input type="number" formControlName="estimatedHours" min="0" step="1" />
       </label>
 
       <label>
-        Length
-        <select formControlName="length">
-          @for (l of lengths; track l) {
-            <option [value]="l">{{ l }}</option>
-          }
-        </select>
+        Est. minutes
+        <input type="number" formControlName="estimatedMins" min="0" max="59" step="5" />
       </label>
 
       <label>

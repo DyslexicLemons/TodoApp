@@ -3,7 +3,7 @@
     <div class="task-card__main">
       <h3 class="task-card__title">{{ task.title }}</h3>
       <div class="task-card__meta">
-        <span class="badge badge--{{ task.difficulty.toLowerCase() }}">{{ task.difficulty }}</span>
+        <span class="badge badge--time">{{ formatEstimatedTime(task.estimatedMinutes) }}</span>
         <span class="badge badge--category">{{ task.category }}</span>
         @if (showLength) {
           <span class="badge badge--length">{{ task.length }}</span>
@@ -18,21 +18,25 @@
     </button>
   </div>
 
-  @if (detail(); as d) {
-    <div class="task-card__detail">
-      @if (d.task.description) {
-        <p class="detail-description">{{ d.task.description }}</p>
+  <div class="task-card__detail-wrap" [class.is-open]="isOpen()">
+    <div class="task-card__detail-inner">
+      @if (detail(); as d) {
+        <div class="task-card__detail">
+          @if (d.task.description) {
+            <p class="detail-description">{{ d.task.description }}</p>
+          }
+          <p class="detail-tip"><strong>Make it easier:</strong> {{ d.easierTip }}</p>
+          @if (d.fact) {
+            <p class="detail-fact">💡 {{ d.fact }}</p>
+          }
+          <p class="detail-stats">
+            Completed {{ d.stats.totalCompletions }} time{{ d.stats.totalCompletions === 1 ? '' : 's' }} ·
+            current streak {{ d.stats.currentStreak }}
+          </p>
+        </div>
+      } @else if (loadingDetail()) {
+        <div class="task-card__detail task-card__detail--loading">Loading...</div>
       }
-      <p class="detail-tip"><strong>Make it easier:</strong> {{ d.easierTip }}</p>
-      @if (d.fact) {
-        <p class="detail-fact">💡 {{ d.fact }}</p>
-      }
-      <p class="detail-stats">
-        Completed {{ d.stats.totalCompletions }} time{{ d.stats.totalCompletions === 1 ? '' : 's' }} ·
-        current streak {{ d.stats.currentStreak }}
-      </p>
     </div>
-  } @else if (loadingDetail()) {
-    <div class="task-card__detail task-card__detail--loading">Loading...</div>
-  }
+  </div>
 </article>

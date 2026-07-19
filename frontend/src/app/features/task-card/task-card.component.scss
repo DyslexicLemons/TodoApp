@@ -41,9 +41,10 @@
   border: 1px solid var(--color-border);
 }
 
-.badge--easy { color: #2f9e44; }
-.badge--medium { color: #e08a2b; }
-.badge--hard { color: #d6336c; }
+.badge--time {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
 
 .complete-btn {
   flex-shrink: 0;
@@ -59,6 +60,23 @@
     opacity: 0.6;
     cursor: default;
   }
+}
+
+.task-card__detail-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.25s ease, opacity 0.2s ease;
+
+  &.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+.task-card__detail-inner {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .task-card__detail {

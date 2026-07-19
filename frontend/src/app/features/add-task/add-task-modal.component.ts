@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskService } from '../../core/services/task.service';
-import { DIFFICULTIES, Difficulty, TASK_CATEGORIES, TASK_LENGTHS, TaskCategory, TaskLength } from '../../core/models/task.model';
+import { TASK_CATEGORIES, TaskCategory } from '../../core/models/task.model';
 
 @Component({
   selector: 'app-add-task-modal',
@@ -17,8 +17,6 @@ export class AddTaskModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
-  readonly difficulties = DIFFICULTIES;
-  readonly lengths = TASK_LENGTHS;
   readonly categories = TASK_CATEGORIES;
 
   submitting = signal(false);
@@ -27,23 +25,27 @@ export class AddTaskModalComponent {
     title: ['', Validators.required],
     description: [''],
     dueDate: [''],
-    difficulty: ['Easy', Validators.required],
-    length: ['Quick', Validators.required],
+    estimatedHours: [0, [Validators.required, Validators.min(0)]],
+    estimatedMins: [30, [Validators.required, Validators.min(0), Validators.max(59)]],
     category: ['Health', Validators.required],
     isMustDo: [false]
   });
 
   submit(): void {
     if (this.form.invalid || this.submitting()) return;
-    this.submitting.set(true);
     const value = this.form.getRawValue();
+    const estimatedMinutes = value.estimatedHours * 60 + value.estimatedMins;
+    if (estimatedMinutes < 1) return;
+
+    this.submitting.set(true);
     this.taskService
       .createTask({
-        ...value,
-        difficulty: value.difficulty as Difficulty,
-        length: value.length as TaskLength,
+        title: value.title,
+        description: value.description,
+        dueDate: value.dueDate || null,
+        estimatedMinutes,
         category: value.category as TaskCategory,
-        dueDate: value.dueDate || null
+        isMustDo: value.isMustDo
       })
       .subscribe({
         next: () => {

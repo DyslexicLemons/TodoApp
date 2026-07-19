@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
-import { Task, TaskDetail } from '../../core/models/task.model';
+import { Task, TaskDetail, formatEstimatedTime } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
 
 @Component({
@@ -15,11 +15,17 @@ export class TaskCardComponent {
   @Input() showLength = false;
   @Output() completed = new EventEmitter<void>();
 
+  formatEstimatedTime = formatEstimatedTime;
+
   detail = signal<TaskDetail | null>(null);
   loadingDetail = signal(false);
   completing = signal(false);
+  isOpen = signal(false);
+  private closeTimeout?: ReturnType<typeof setTimeout>;
 
   onHoverStart(): void {
+    clearTimeout(this.closeTimeout);
+    this.isOpen.set(true);
     this.loadingDetail.set(true);
     this.taskService.getTaskDetail(this.task.id).subscribe((detail) => {
       this.detail.set(detail);
@@ -28,7 +34,14 @@ export class TaskCardComponent {
   }
 
   onHoverEnd(): void {
-    this.detail.set(null);
+    this.isOpen.set(false);
+    // Keep the detail content mounted through the close transition (see
+    // task-card__detail-wrap in the template) - clearing it immediately would
+    // unmount the content and make the collapse animation snap instead of ease.
+    this.closeTimeout = setTimeout(() => {
+      this.detail.set(null);
+      this.loadingDetail.set(false);
+    }, 300);
   }
 
   complete(): void {

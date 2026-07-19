@@ -1,8 +1,6 @@
-export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 export type TaskLength = 'Quick' | 'Small' | 'Medium' | 'Long-Term';
 export type TaskCategory = 'Health' | 'Working Skills' | 'Personal Skills' | 'Housework' | 'Social' | 'Self-Expression';
 
-export const DIFFICULTIES: Difficulty[] = ['Easy', 'Medium', 'Hard'];
 export const TASK_LENGTHS: TaskLength[] = ['Quick', 'Small', 'Medium', 'Long-Term'];
 export const TASK_CATEGORIES: TaskCategory[] = [
   'Health',
@@ -18,7 +16,7 @@ export interface Task {
   title: string;
   description: string;
   dueDate: string | null;
-  difficulty: Difficulty;
+  estimatedMinutes: number;
   length: TaskLength;
   category: TaskCategory;
   isMustDo: boolean;
@@ -43,8 +41,7 @@ export interface NewTask {
   title: string;
   description?: string;
   dueDate?: string | null;
-  difficulty: Difficulty;
-  length: TaskLength;
+  estimatedMinutes: number;
   category: TaskCategory;
   isMustDo: boolean;
 }
@@ -56,4 +53,12 @@ export function lengthToSlug(length: TaskLength): string {
 
 export function slugToLength(slug: string): TaskLength | undefined {
   return TASK_LENGTHS.find((l) => lengthToSlug(l) === slug);
+}
+
+/** Human-readable approximation of an estimated duration, e.g. "<30 min", "~2 hours". */
+export function formatEstimatedTime(minutes: number): string {
+  if (minutes < 30) return '<30 min';
+  if (minutes < 60) return `~${Math.round(minutes / 15) * 15} min`;
+  const hours = Math.round((minutes / 60) * 2) / 2;
+  return `~${hours} hour${hours === 1 ? '' : 's'}`;
 }
