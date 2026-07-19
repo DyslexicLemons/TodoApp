@@ -6,11 +6,15 @@ async function getSettings(req, res) {
 }
 
 async function updateSettings(req, res) {
-  const settings = await Settings.findOneAndUpdate(
-    { singletonKey: "singleton" },
-    { workSchedule: req.body.workSchedule },
-    { new: true, upsert: true, runValidators: true }
-  );
+  const update = {};
+  if (req.body.workSchedule !== undefined) update.workSchedule = req.body.workSchedule;
+  if (req.body.sleepSchedule !== undefined) update.sleepSchedule = req.body.sleepSchedule;
+
+  const settings = await Settings.findOneAndUpdate({ singletonKey: "singleton" }, update, {
+    new: true,
+    upsert: true,
+    runValidators: true,
+  });
   res.json(settings);
 }
 

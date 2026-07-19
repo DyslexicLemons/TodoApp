@@ -20,6 +20,16 @@
       }
     </div>
 
+    <h2 class="section-title schedule-section__sleep-title">Sleep Schedule</h2>
+    <p class="section-hint">Also treated as busy every day, the same hours whichever day it is.</p>
+
+    <div class="schedule-row schedule-row--sleep" [formGroup]="sleepForm">
+      <span class="schedule-row__toggle">Every day</span>
+      <input type="time" formControlName="start" />
+      <span class="schedule-row__sep">to</span>
+      <input type="time" formControlName="end" />
+    </div>
+
     <div class="schedule-actions">
       <button type="button" class="btn-primary" [disabled]="saving()" (click)="save()">
         {{ saving() ? 'Saving...' : 'Save Schedule' }}

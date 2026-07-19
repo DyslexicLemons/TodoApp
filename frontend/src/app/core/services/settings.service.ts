@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../api-base-url';
-import { AppSettings, CalendarStatus, DaySchedule } from '../models/settings.model';
+import { AppSettings, CalendarStatus, DaySchedule, SleepSchedule } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -12,8 +12,8 @@ export class SettingsService {
     return this.http.get<AppSettings>(`${API_BASE_URL}/settings`);
   }
 
-  updateSettings(workSchedule: DaySchedule[]): Observable<AppSettings> {
-    return this.http.put<AppSettings>(`${API_BASE_URL}/settings`, { workSchedule });
+  updateSettings(workSchedule: DaySchedule[], sleepSchedule: SleepSchedule): Observable<AppSettings> {
+    return this.http.put<AppSettings>(`${API_BASE_URL}/settings`, { workSchedule, sleepSchedule });
   }
 
   getCalendarStatus(): Observable<CalendarStatus> {

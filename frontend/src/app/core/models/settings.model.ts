@@ -5,8 +5,15 @@ export interface DaySchedule {
   end: string;
 }
 
+/** Same every day, unlike DaySchedule - end < start means it wraps past midnight. */
+export interface SleepSchedule {
+  start: string;
+  end: string;
+}
+
 export interface AppSettings {
   workSchedule: DaySchedule[];
+  sleepSchedule: SleepSchedule;
 }
 
 export interface CalendarStatus {

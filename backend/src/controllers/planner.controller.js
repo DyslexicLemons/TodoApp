@@ -23,6 +23,7 @@ async function getWeekPlan(req, res) {
   const plan = buildWeekPlan({
     tasks: tasks.map((t) => t.toJSON()),
     workSchedule: settings.workSchedule,
+    sleepSchedule: settings.sleepSchedule,
     calendarBusy,
     now,
     weekStart,

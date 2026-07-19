@@ -122,6 +122,55 @@ test("computeFreeWindows: a full-day work shift leaves an empty (no-capacity) da
   assert.equal(monday.length, 0);
 });
 
+test("computeFreeWindows: sleep schedule removes the same hours every day, with no per-day toggle", () => {
+  const weekStart = MONDAY;
+  const free = computeFreeWindows({
+    weekStart,
+    weekEnd: weekEndOf(weekStart),
+    now: weekStart,
+    workSchedule: allDisabledSchedule(),
+    sleepSchedule: { start: "08:00", end: "15:00" },
+    calendarBusy: [],
+  });
+  const byDay = splitWindowsByDay(free, weekStart);
+
+  for (const dayIndex of [0, 1, 2, 3, 4, 5, 6]) {
+    const windows = byDay.get(dayIndex);
+    assert.equal(windows.length, 2, `day ${dayIndex} should be split by the daily sleep block`);
+    assert.equal(windows[0].end, weekStart.getTime() + dayIndex * DAY_MS + 8 * HOUR_MS);
+    assert.equal(windows[1].start, weekStart.getTime() + dayIndex * DAY_MS + 15 * HOUR_MS);
+  }
+});
+
+test("computeFreeWindows: sleep schedule wraps past midnight and combines with the work shift", () => {
+  const weekStart = MONDAY;
+  const schedule = allDisabledSchedule();
+  schedule[weekStart.getDay()] = { enabled: true, start: "16:00", end: "07:00" }; // Monday night shift
+  const free = computeFreeWindows({
+    weekStart,
+    weekEnd: weekEndOf(weekStart),
+    now: weekStart,
+    workSchedule: schedule,
+    sleepSchedule: { start: "23:00", end: "07:00" }, // wraps past midnight
+    calendarBusy: [],
+  });
+  const byDay = splitWindowsByDay(free, weekStart);
+
+  // Monday: Sunday night's sleep wraps in and covers 00:00-07:00, the work shift covers
+  // 16:00-24:00, so Monday's only free window is the 07:00-16:00 gap between them.
+  const monday = byDay.get(0);
+  assert.equal(monday.length, 1);
+  assert.equal(monday[0].start, weekStart.getTime() + 7 * HOUR_MS);
+  assert.equal(monday[0].end, weekStart.getTime() + 16 * HOUR_MS);
+
+  // Tuesday: no work shift, but sleep (00:00-07:00 wrap-in, plus 23:00-24:00 start of its own night)
+  // leaves free time only between 07:00 and 23:00.
+  const tuesday = byDay.get(1);
+  assert.equal(tuesday.length, 1);
+  assert.equal(tuesday[0].start, weekStart.getTime() + DAY_MS + 7 * HOUR_MS);
+  assert.equal(tuesday[0].end, weekStart.getTime() + DAY_MS + 23 * HOUR_MS);
+});
+
 test("assignMonthlyTasksToWeeks: 5 undone tasks over 2 remaining weeks split 3-then-2, oldest first", () => {
   const now = new Date("2024-01-22T09:00:00"); // 3rd Monday of Jan 2024; Jan 22 & Jan 29 remain
   const tasks = ["m1", "m2", "m3", "m4", "m5"].map((id, i) =>

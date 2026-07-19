@@ -35,6 +35,26 @@ function shiftBlocksForWeek(weekStart, workSchedule) {
   return blocks;
 }
 
+/** Every daily sleep block overlapping the week, expressed as absolute [start,end) epoch-ms.
+ *  Unlike the work shift, sleep hours are the same every day, so there's no per-day schedule to
+ *  look up. Includes the day before the week starts, for the same overnight-wrap reason as shifts. */
+function sleepBlocksForWeek(weekStart, sleepSchedule) {
+  if (!sleepSchedule) return [];
+
+  const startMin = parseTimeToMinutes(sleepSchedule.start);
+  const endMin = parseTimeToMinutes(sleepSchedule.end);
+  const wraps = endMin <= startMin;
+
+  const blocks = [];
+  for (let offset = -1; offset < 7; offset++) {
+    const date = addDays(weekStart, offset);
+    const blockStart = date.getTime() + startMin * 60000;
+    const blockEnd = wraps ? addDays(date, 1).getTime() + endMin * 60000 : date.getTime() + endMin * 60000;
+    blocks.push({ start: blockStart, end: blockEnd });
+  }
+  return blocks;
+}
+
 function subtractInterval(freeIntervals, busy) {
   const result = [];
   for (const f of freeIntervals) {
@@ -49,13 +69,15 @@ function subtractInterval(freeIntervals, busy) {
 }
 
 /** Free time across the whole week as a flat, non-overlapping list of [start,end) epoch-ms windows:
- *  the full week, minus anything already past `now`, minus work-shift blocks, minus Calendar busy time. */
-function computeFreeWindows({ weekStart, weekEnd, now, workSchedule, calendarBusy = [] }) {
+ *  the full week, minus anything already past `now`, minus work-shift blocks, minus sleep blocks,
+ *  minus Calendar busy time. */
+function computeFreeWindows({ weekStart, weekEnd, now, workSchedule, sleepSchedule, calendarBusy = [] }) {
   const effectiveStart = Math.max(weekStart.getTime(), now.getTime());
   let free = [{ start: effectiveStart, end: weekEnd.getTime() }].filter((w) => w.end > w.start);
 
   const busyBlocks = [
     ...shiftBlocksForWeek(weekStart, workSchedule),
+    ...sleepBlocksForWeek(weekStart, sleepSchedule),
     ...calendarBusy.map((b) => ({ start: new Date(b.start).getTime(), end: new Date(b.end).getTime() })),
   ];
 
@@ -232,13 +254,20 @@ function assignTasksToWindows(orderedCandidates, freeWindowsByDayInput) {
   return { scheduled, unscheduled };
 }
 
-/** Builds the full week plan: free time (minus work shift and Calendar busy time), tasks assigned
- *  into it in priority order, and anything that didn't fit. */
-function buildWeekPlan({ tasks, workSchedule, calendarBusy = [], now = new Date(), weekStart }) {
+/** Builds the full week plan: free time (minus work shift, sleep, and Calendar busy time), tasks
+ *  assigned into it in priority order, and anything that didn't fit. */
+function buildWeekPlan({ tasks, workSchedule, sleepSchedule, calendarBusy = [], now = new Date(), weekStart }) {
   const resolvedWeekStart = weekStart ? startOfDay(weekStart) : startOfWeek(now);
   const weekEnd = addDays(resolvedWeekStart, 7);
 
-  const freeWindows = computeFreeWindows({ weekStart: resolvedWeekStart, weekEnd, now, workSchedule, calendarBusy });
+  const freeWindows = computeFreeWindows({
+    weekStart: resolvedWeekStart,
+    weekEnd,
+    now,
+    workSchedule,
+    sleepSchedule,
+    calendarBusy,
+  });
   const freeWindowsByDay = splitWindowsByDay(freeWindows, resolvedWeekStart);
 
   const candidates = buildWeekCandidates({ tasks, now, weekStart: resolvedWeekStart, weekEnd });
