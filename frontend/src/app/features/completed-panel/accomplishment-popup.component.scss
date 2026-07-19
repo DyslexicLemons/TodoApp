@@ -1,7 +1,5 @@
 .accomplishment-popup {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  right: 0;
+  position: fixed;
   width: 220px;
   background: var(--color-surface);
   color: var(--color-text);

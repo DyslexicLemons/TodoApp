@@ -9,14 +9,14 @@
     @for (task of completedTasks(); track task.id) {
       <li
         class="completed-item"
-        (mouseenter)="hoveredTaskId.set(task.id)"
+        (mouseenter)="onHover(task.id, $event)"
         (mouseleave)="hoveredTaskId.set(null)"
       >
         <app-streak-flame-icon [streak]="task.currentStreak"></app-streak-flame-icon>
         <span class="completed-title">{{ task.title }}</span>
 
-        @if (hoveredTaskId() === task.id) {
-          <app-accomplishment-popup [task]="task"></app-accomplishment-popup>
+        @if (hoveredTaskId() === task.id && hoveredRect(); as rect) {
+          <app-accomplishment-popup [task]="task" [anchorRect]="rect"></app-accomplishment-popup>
         }
       </li>
     }

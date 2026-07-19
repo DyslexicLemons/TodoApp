@@ -20,6 +20,12 @@ export class CompletedPanelComponent implements OnInit, OnDestroy {
 
   completedTasks = signal<Task[]>([]);
   hoveredTaskId = signal<string | null>(null);
+  hoveredRect = signal<DOMRect | null>(null);
+
+  onHover(taskId: string, event: MouseEvent): void {
+    this.hoveredTaskId.set(taskId);
+    this.hoveredRect.set((event.currentTarget as HTMLElement).getBoundingClientRect());
+  }
 
   ngOnInit(): void {
     this.load();
