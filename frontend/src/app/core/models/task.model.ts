@@ -1,4 +1,4 @@
-import { startOfWeek, startOfMonth } from '../../../../../shared/dateLogic';
+import { startOfDay, startOfWeek, startOfMonth } from '../../../../../shared/dateLogic';
 
 export type TaskLength = 'Quick' | 'Small' | 'Medium' | 'Long-Term';
 export type TaskCategory = 'Health' | 'Working Skills' | 'Personal Skills' | 'Housework' | 'Social' | 'Self-Expression';
@@ -96,4 +96,18 @@ export function completionsInCurrentPeriod(task: Task, now: Date = new Date()): 
     return task.completionHistory.filter((d) => startOfMonth(new Date(d)).getTime() === currentMonth).length;
   }
   return task.completionHistory.length;
+}
+
+/** Whether a task has nothing left to do for its current day/week/month/lifetime, per its frequency. Mirrors backend/src/services/frequencyService.js#isDoneForCurrentPeriod. */
+export function isDoneForCurrentPeriod(task: Task, now: Date = new Date()): boolean {
+  if (task.frequency === 'Weekly') {
+    return completionsInCurrentPeriod(task, now) >= task.targetCount;
+  }
+  if (task.frequency === 'Monthly') {
+    return completionsInCurrentPeriod(task, now) >= 1;
+  }
+  if (task.frequency === 'One-Time') {
+    return task.completionHistory.length > 0;
+  }
+  return Boolean(task.lastCompletedDate) && startOfDay(task.lastCompletedDate).getTime() === startOfDay(now).getTime();
 }

@@ -11,6 +11,7 @@ import {
   categoryToEmoji,
   completionsInCurrentPeriod,
   formatEstimatedTime,
+  isDoneForCurrentPeriod,
   lengthToSlug
 } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
@@ -107,18 +108,23 @@ export class TaskCardComponent {
 
   onCompleteClick(event: MouseEvent): void {
     if (this.completing()) return;
-    this.launchCompletionFly(event.currentTarget as HTMLElement);
-    this.complete();
+    this.complete(event.currentTarget as HTMLElement);
   }
 
-  complete(): void {
+  complete(origin: HTMLElement): void {
     if (this.completing()) return;
     this.completing.set(true);
     clearTimeout(this.completeErrorTimeout);
     this.completeError.set(null);
     this.taskService.completeTask(this.task.id).subscribe({
-      next: () => {
+      next: (updatedTask) => {
         this.completing.set(false);
+        // Only play the "leaving the list" animation once the task is actually
+        // done for its period - a Weekly task with targetCount > 1 rightly stays
+        // in must-do after a single completion, and shouldn't look like it left.
+        if (isDoneForCurrentPeriod(updatedTask)) {
+          this.launchCompletionFly(origin);
+        }
         this.completed.emit();
       },
       error: (err: HttpErrorResponse) => {
