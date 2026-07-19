@@ -20,13 +20,16 @@
   animation: bg-drift 14s ease-in-out infinite;
 }
 
-/* Vignettes anchored around the edges. The bottom-right corner is left
+/* Vignettes scattered around the edges — deliberately staggered toward
+   and away from the edge (not a flush column) so they read as loosely
+   placed rather than lined up in a grid. The bottom-right corner is left
    clear on purpose — that's where the completed-panel (position: fixed)
    lives, so nothing gets planted underneath it. */
 .vignette {
   position: absolute;
   width: 132px;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.06));
+  transform: rotate(var(--tilt, 0deg));
 
   svg {
     width: 100%;
@@ -35,27 +38,27 @@
   }
 }
 
-.vignette--reading    { top: 2%;  left: 3%; }
-.vignette--knitting   { top: 15%; left: 2%;   width: 118px; }
-.vignette--stretch    { top: 28%; left: 1.5%; width: 104px; }
-.vignette--meditating { top: 41%; left: 3%;   width: 108px; }
-.vignette--laundry    { top: 54%; left: 2%;   width: 126px; }
-.vignette--watering   { bottom: 2%; left: 5%; width: 140px; }
+.vignette--reading    { top: 2%;  left: 5%; --tilt: -4deg; }
+.vignette--knitting   { top: 13%; left: 10%; width: 118px; --tilt: 5deg; }
+.vignette--stretch    { top: 29%; left: 1%;  width: 104px; --tilt: -3deg; }
+.vignette--meditating { top: 44%; left: 9%;  width: 108px; --tilt: 4deg; }
+.vignette--laundry    { top: 59%; left: 2%;  width: 126px; --tilt: -6deg; }
+.vignette--watering   { bottom: 2%; left: 10%; width: 140px; --tilt: 3deg; }
 
-.vignette--tea         { top: 4%;  right: 4%; width: 118px; }
-.vignette--journaling  { top: 19%; right: 3%; width: 112px; }
-.vignette--cat         { top: 34%; right: 2%; width: 96px; }
-.vignette--baking      { top: 49%; right: 3%; width: 122px; }
+.vignette--tea         { top: 4%;  right: 2%;  width: 118px; --tilt: 5deg; }
+.vignette--journaling  { top: 18%; right: 10%; width: 112px; --tilt: -4deg; }
+.vignette--cat         { top: 36%; right: 1%;  width: 96px;  --tilt: 6deg; }
+.vignette--baking      { top: 51%; right: 9%;  width: 122px; --tilt: -3deg; }
 
-@media (max-width: 1300px) {
+@media (max-width: 1400px) {
   .vignette--knitting, .vignette--stretch, .vignette--meditating, .vignette--laundry,
   .vignette--journaling, .vignette--cat, .vignette--baking {
     display: none;
   }
 }
 @media (max-width: 720px) {
-  .vignette { opacity: 0.55; transform: scale(0.8); }
-  .vignette--watering { transform: scale(0.68); }
+  .vignette { opacity: 0.55; transform: scale(0.8) rotate(var(--tilt, 0deg)); }
+  .vignette--watering { transform: scale(0.68) rotate(var(--tilt, 0deg)); }
 }
 
 .bob { animation: bg-bob 5s ease-in-out infinite; transform-origin: 50% 85%; }
