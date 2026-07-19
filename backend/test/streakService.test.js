@@ -51,6 +51,35 @@ test("weekly task: streak stays unchanged until target reached", () => {
   assert.equal(result.currentStreak, 0);
 });
 
+test("weekly task: allows a second same-day completion while under target", () => {
+  const now = new Date("2024-01-15T18:00:00"); // same Monday, later that day
+  const morning = new Date("2024-01-15T08:00:00");
+  const task = {
+    frequency: "Weekly",
+    targetCount: 3,
+    currentStreak: 0,
+    lastCompletedDate: morning,
+    completionHistory: [morning],
+  };
+  const result = applyCompletion(task, now);
+  assert.equal(result.completionHistory.length, 2);
+});
+
+test("weekly task: blocks completion once the period target is already met", () => {
+  const now = new Date("2024-01-17T18:00:00"); // Wednesday, same week
+  const monday = new Date("2024-01-15T08:00:00");
+  const tuesday = new Date("2024-01-16T08:00:00");
+  const wednesday = new Date("2024-01-17T08:00:00");
+  const task = {
+    frequency: "Weekly",
+    targetCount: 3,
+    currentStreak: 1,
+    lastCompletedDate: wednesday,
+    completionHistory: [monday, tuesday, wednesday],
+  };
+  assert.throws(() => applyCompletion(task, now), AlreadyCompletedError);
+});
+
 test("weekly task: hitting target for the first time sets streak to 1", () => {
   const now = new Date("2024-01-17T12:00:00"); // Wednesday
   const monday = new Date("2024-01-15T12:00:00");

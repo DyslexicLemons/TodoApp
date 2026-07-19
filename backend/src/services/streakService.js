@@ -1,5 +1,5 @@
 const { daysBetween, isSameDay } = require("./dateUtil");
-const { periodKey } = require("./frequencyService");
+const { periodKey, isDoneForCurrentPeriod } = require("./frequencyService");
 
 const FLAME_TIERS = {
   small: { min: 1, max: 4 },
@@ -82,8 +82,15 @@ function applyCompletion(task, now = new Date()) {
     throw new AlreadyCompletedError();
   }
 
-  if (lastCompletedDate && isSameDay(lastCompletedDate, now)) {
-    throw new AlreadyCompletedTodayError();
+  // Daily tasks allow exactly one completion per calendar day. Weekly/Monthly tasks
+  // may be completed multiple times in a day toward their period target, so they're
+  // only blocked once that target has already been reached (see isDoneForCurrentPeriod).
+  if (frequency === "Daily") {
+    if (lastCompletedDate && isSameDay(lastCompletedDate, now)) {
+      throw new AlreadyCompletedTodayError();
+    }
+  } else if ((frequency === "Weekly" || frequency === "Monthly") && isDoneForCurrentPeriod(task, now)) {
+    throw new AlreadyCompletedError();
   }
 
   let nextStreak;
