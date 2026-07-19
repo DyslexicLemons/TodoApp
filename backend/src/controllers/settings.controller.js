@@ -10,7 +10,7 @@ async function updateSettings(req, res) {
   if (req.body.workSchedule !== undefined) update.workSchedule = req.body.workSchedule;
   if (req.body.sleepSchedule !== undefined) update.sleepSchedule = req.body.sleepSchedule;
 
-  const settings = await Settings.findOneAndUpdate({ singletonKey: "singleton" }, update, {
+  const settings = await Settings.findOneAndUpdate({ singletonKey: "singleton" }, { $set: update }, {
     new: true,
     upsert: true,
     runValidators: true,

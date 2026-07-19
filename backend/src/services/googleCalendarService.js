@@ -37,12 +37,14 @@ async function exchangeCodeForTokens(code) {
   await CalendarConnection.findOneAndUpdate(
     { singletonKey: "singleton" },
     {
-      connected: true,
-      googleAccountEmail,
-      accessToken: tokens.access_token || null,
-      refreshToken: tokens.refresh_token || null,
-      accessTokenExpiresAt: tokens.expiry_date ? new Date(tokens.expiry_date) : null,
-      scope: tokens.scope || null,
+      $set: {
+        connected: true,
+        googleAccountEmail,
+        accessToken: tokens.access_token || null,
+        refreshToken: tokens.refresh_token || null,
+        accessTokenExpiresAt: tokens.expiry_date ? new Date(tokens.expiry_date) : null,
+        scope: tokens.scope || null,
+      },
     },
     { upsert: true }
   );
@@ -64,7 +66,7 @@ async function authorizedClientForConnection(connection) {
     if (tokens.refresh_token) update.refreshToken = tokens.refresh_token;
     if (tokens.expiry_date) update.accessTokenExpiresAt = new Date(tokens.expiry_date);
     if (Object.keys(update).length > 0) {
-      CalendarConnection.findOneAndUpdate({ singletonKey: "singleton" }, update).catch((err) =>
+      CalendarConnection.findOneAndUpdate({ singletonKey: "singleton" }, { $set: update }).catch((err) =>
         console.error("Failed to persist refreshed Google Calendar token:", err)
       );
     }
@@ -90,7 +92,7 @@ async function getFreeBusy(timeMin, timeMax) {
     },
   });
 
-  await CalendarConnection.findOneAndUpdate({ singletonKey: "singleton" }, { lastSyncedAt: new Date() });
+  await CalendarConnection.findOneAndUpdate({ singletonKey: "singleton" }, { $set: { lastSyncedAt: new Date() } });
 
   const busy = data.calendars?.[connection.calendarId]?.busy || [];
   return busy.map((b) => ({ start: b.start, end: b.end }));
@@ -110,13 +112,15 @@ async function disconnect() {
   await CalendarConnection.findOneAndUpdate(
     { singletonKey: "singleton" },
     {
-      connected: false,
-      googleAccountEmail: null,
-      accessToken: null,
-      refreshToken: null,
-      accessTokenExpiresAt: null,
-      scope: null,
-      lastSyncedAt: null,
+      $set: {
+        connected: false,
+        googleAccountEmail: null,
+        accessToken: null,
+        refreshToken: null,
+        accessTokenExpiresAt: null,
+        scope: null,
+        lastSyncedAt: null,
+      },
     }
   );
 }
