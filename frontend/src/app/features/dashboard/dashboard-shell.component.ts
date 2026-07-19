@@ -17,11 +17,12 @@ export class DashboardShellComponent {
   private elementRef = inject(ElementRef);
 
   readonly tabs = [
-    { label: 'Home', path: '/home' },
-    { label: 'Quick', path: '/tasks/quick' },
-    { label: 'Small', path: '/tasks/small' },
-    { label: 'Medium', path: '/tasks/medium' },
-    { label: 'Long-Term', path: '/tasks/long-term' }
+    { label: 'Home', path: '/home', muted: false },
+    { label: 'Quick', path: '/tasks/quick', muted: false },
+    { label: 'Small', path: '/tasks/small', muted: false },
+    { label: 'Medium', path: '/tasks/medium', muted: false },
+    { label: 'Long-Term', path: '/tasks/long-term', muted: false },
+    { label: 'Completed Task History', path: '/history', muted: true }
   ];
 
   isAddTaskOpen = signal(false);

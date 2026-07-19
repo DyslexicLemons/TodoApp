@@ -1,0 +1,11 @@
+<div class="bar-chart">
+  @for (week of weeks; track week.weekStart) {
+    <div class="bar-column" [attr.title]="'Week of ' + week.weekLabel + ': ' + week.completions + ' completions'">
+      <span class="bar-value">{{ week.completions }}</span>
+      <div class="bar-track">
+        <div class="bar-fill" [style.height.%]="barHeightPercent(week)"></div>
+      </div>
+      <span class="bar-label">{{ week.weekLabel }}</span>
+    </div>
+  }
+</div>

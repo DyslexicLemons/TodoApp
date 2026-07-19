@@ -37,6 +37,21 @@
     color: var(--color-on-accent);
     box-shadow: var(--shadow);
   }
+
+  &--muted {
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &--muted.tab-link--active {
+    opacity: 1;
+    background: var(--color-neutral);
+    color: #fff;
+    box-shadow: none;
+  }
 }
 
 .add-task-btn {

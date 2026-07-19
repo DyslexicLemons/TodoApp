@@ -1,0 +1,24 @@
+<div class="heatmap">
+  <div class="heatmap-row heatmap-row--header">
+    <span class="heatmap-cell heatmap-cell--label"></span>
+    @for (category of categories; track category) {
+      <span class="heatmap-cell heatmap-cell--label">{{ category }}</span>
+    }
+  </div>
+
+  @for (row of matrix; track row.weekday) {
+    <div class="heatmap-row">
+      <span class="heatmap-cell heatmap-cell--label">{{ row.weekday }}</span>
+      @for (category of categories; track category) {
+        <span
+          class="heatmap-cell heatmap-cell--value"
+          [class.heatmap-cell--dark]="isDark(row.categories[category])"
+          [style.background]="'color-mix(in srgb, var(--color-accent) ' + intensity(row.categories[category]) + '%, var(--color-surface))'"
+          [attr.title]="cellTitle(row, category)"
+        >
+          {{ row.categories[category] }}
+        </span>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,70 @@
+<div class="history-view">
+  <section class="month-picker-section">
+    <h2 class="section-title">Completed Task History</h2>
+    @if (months().length > 0) {
+      <select
+        class="month-select"
+        [value]="selectedMonthKey()"
+        (change)="onMonthChange($any($event.target).value)"
+      >
+        @for (option of months(); track monthKey(option)) {
+          <option [value]="monthKey(option)">{{ option.label }}</option>
+        }
+      </select>
+    }
+  </section>
+
+  @if (dashboard(); as d) {
+    <section class="stats-section">
+      <div class="stat-tile">
+        <span class="stat-tile__label">{{ d.label }} completions</span>
+        <span class="stat-tile__value">{{ d.totalCompletions }}</span>
+        @if (d.trend.totalPercentChange !== null) {
+          <span class="stat-tile__trend" [class.stat-tile__trend--down]="d.trend.totalDelta < 0">
+            {{ d.trend.totalDelta >= 0 ? '▲' : '▼' }}
+            {{ d.trend.totalDelta >= 0 ? '+' : '' }}{{ d.trend.totalDelta }}
+            ({{ d.trend.totalPercentChange >= 0 ? '+' : '' }}{{ d.trend.totalPercentChange }}%) vs {{ d.previousMonth.label }}
+          </span>
+        } @else {
+          <span class="stat-tile__trend">New vs {{ d.previousMonth.label }}</span>
+        }
+      </div>
+    </section>
+
+    <section class="weekly-section">
+      <h3 class="section-subtitle">Productivity by week</h3>
+      <app-weekly-bar-chart [weeks]="d.weeklyBreakdown"></app-weekly-bar-chart>
+    </section>
+
+    <section class="category-section">
+      <h3 class="section-subtitle">Completions by category</h3>
+      <div class="category-list">
+        @for (entry of d.trend.byCategory; track entry.category) {
+          <div class="category-row" [attr.title]="entry.category + ': ' + entry.thisMonth + ' completions'">
+            <span class="category-row__label">{{ entry.category }}</span>
+            <div class="category-row__track">
+              <div
+                class="category-row__fill"
+                [style.width.%]="d.totalCompletions > 0 ? (entry.thisMonth / d.totalCompletions) * 100 : 0"
+              ></div>
+            </div>
+            <span class="category-row__count">{{ entry.thisMonth }}</span>
+            <span class="category-row__delta" [class.category-row__delta--down]="entry.delta < 0">
+              {{ entry.delta > 0 ? '+' : '' }}{{ entry.delta === 0 ? '—' : entry.delta }}
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+  } @else if (!loading()) {
+    <p class="empty-state">No completed tasks yet.</p>
+  }
+
+  @if (matrix(); as m) {
+    <section class="weekday-section">
+      <h3 class="section-subtitle">All-time: which days are most productive</h3>
+      <p class="section-hint">Based on all {{ m.grandTotal }} completions ever recorded, by day of week and category.</p>
+      <app-weekday-heatmap [matrix]="m.matrix"></app-weekday-heatmap>
+    </section>
+  }
+</div>

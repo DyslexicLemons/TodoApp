@@ -12,6 +12,7 @@ body {
 :root {
   --font-body: 'Nunito', system-ui, sans-serif;
   --color-on-accent: #ffffff;
+  --color-neutral: #9a9a9a;
 
   /* Time-badge colors, keyed by length bucket - mirrors each theme's --color-accent
      so a task's time-estimate pill reads the same color regardless of page theme. */
@@ -91,6 +92,20 @@ body {
   --shadow: 0 0 18px rgba(255, 46, 99, 0.45), 0 0 32px rgba(140, 70, 255, 0.2);
 }
 
+/* Completed Task History: deliberately neutral/desaturated, distinct from the colorful length themes */
+[data-theme='history'] {
+  --color-bg: #f4f4f5;
+  --color-surface: #ffffff;
+  --color-text: #2c2c2e;
+  --color-border: #dcdcdf;
+  --color-accent: #8a8a8a;
+  --color-on-accent: #ffffff;
+  --font-heading: 'Nunito', system-ui, sans-serif;
+  --radius: 10px;
+  --border-width: 1px;
+  --shadow: none;
+}
+
 /* Dark mode: per-theme overrides, toggled via the settings menu (adds .dark-mode to <html>) */
 html.dark-mode[data-theme='home'] {
   --color-bg: #191726;
@@ -139,4 +154,13 @@ html.dark-mode[data-theme='long-term'] {
   --color-accent: #ff3f74;
   --color-on-accent: #150a22;
   --shadow: 0 0 26px rgba(255, 46, 99, 0.65), 0 0 50px rgba(150, 70, 255, 0.35);
+}
+
+html.dark-mode[data-theme='history'] {
+  --color-bg: #1a1a1c;
+  --color-surface: #232325;
+  --color-text: #e8e8ea;
+  --color-border: #3a3a3d;
+  --color-accent: #a3a3a6;
+  --color-on-accent: #1a1a1c;
 }
