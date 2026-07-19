@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const DIFFICULTIES = ["Easy", "Medium", "Hard"];
 const LENGTHS = ["Quick", "Small", "Medium", "Long-Term"];
-const CATEGORIES = ["Health", "Working Skills", "Personal Skills", "Housework", "Social"];
+const CATEGORIES = ["Health", "Working Skills", "Personal Skills", "Housework", "Social", "Self-Expression"];
 
 const taskSchema = new mongoose.Schema(
   {

@@ -1,6 +1,6 @@
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 export type TaskLength = 'Quick' | 'Small' | 'Medium' | 'Long-Term';
-export type TaskCategory = 'Health' | 'Working Skills' | 'Personal Skills' | 'Housework' | 'Social';
+export type TaskCategory = 'Health' | 'Working Skills' | 'Personal Skills' | 'Housework' | 'Social' | 'Self-Expression';
 
 export const DIFFICULTIES: Difficulty[] = ['Easy', 'Medium', 'Hard'];
 export const TASK_LENGTHS: TaskLength[] = ['Quick', 'Small', 'Medium', 'Long-Term'];
@@ -9,7 +9,8 @@ export const TASK_CATEGORIES: TaskCategory[] = [
   'Working Skills',
   'Personal Skills',
   'Housework',
-  'Social'
+  'Social',
+  'Self-Expression'
 ];
 
 export interface Task {
