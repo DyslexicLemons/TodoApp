@@ -50,6 +50,26 @@
 .badge--time {
   color: var(--color-accent);
   border-color: var(--color-accent);
+
+  &[data-length='quick'] {
+    color: var(--length-color-quick);
+    border-color: var(--length-color-quick);
+  }
+
+  &[data-length='small'] {
+    color: var(--length-color-small);
+    border-color: var(--length-color-small);
+  }
+
+  &[data-length='medium'] {
+    color: var(--length-color-medium);
+    border-color: var(--length-color-medium);
+  }
+
+  &[data-length='long-term'] {
+    color: var(--length-color-long-term);
+    border-color: var(--length-color-long-term);
+  }
 }
 
 .complete-btn {

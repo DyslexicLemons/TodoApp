@@ -12,6 +12,13 @@ body {
 :root {
   --font-body: 'Nunito', system-ui, sans-serif;
   --color-on-accent: #ffffff;
+
+  /* Time-badge colors, keyed by length bucket - mirrors each theme's --color-accent
+     so a task's time-estimate pill reads the same color regardless of page theme. */
+  --length-color-quick: #8fd6a8;
+  --length-color-small: #6aa9e0;
+  --length-color-medium: #e08a2b;
+  --length-color-long-term: #ff2e63;
 }
 
 /* Home: neutral overview, calm and welcoming */

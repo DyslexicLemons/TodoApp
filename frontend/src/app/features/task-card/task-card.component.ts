@@ -9,7 +9,8 @@ import {
   TaskFrequency,
   categoryToEmoji,
   completionsInCurrentPeriod,
-  formatEstimatedTime
+  formatEstimatedTime,
+  lengthToSlug
 } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
 import { TaskRefreshService } from '../../core/services/task-refresh.service';
@@ -33,6 +34,7 @@ export class TaskCardComponent {
 
   formatEstimatedTime = formatEstimatedTime;
   categoryToEmoji = categoryToEmoji;
+  lengthToSlug = lengthToSlug;
   readonly categories = TASK_CATEGORIES;
   readonly frequencies = TASK_FREQUENCIES;
 
