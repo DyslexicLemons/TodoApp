@@ -25,4 +25,4 @@ function sortTasksForCategory(tasks) {
   return { mustDo, optional };
 }
 
-module.exports = { compareOptionalTasks, sortTasksForCategory };
+module.exports = { compareOptionalTasks, sortTasksForCategory, dueDateValue };
