@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   TASK_CATEGORIES,
@@ -41,11 +42,13 @@ export class TaskCardComponent {
   detail = signal<TaskDetail | null>(null);
   loadingDetail = signal(false);
   completing = signal(false);
+  completeError = signal<string | null>(null);
   isOpen = signal(false);
   hovering = signal(false);
   editing = signal(false);
   savingEdit = signal(false);
   private closeTimeout?: ReturnType<typeof setTimeout>;
+  private completeErrorTimeout?: ReturnType<typeof setTimeout>;
 
   editForm = this.fb.nonNullable.group({
     title: ['', Validators.required],
@@ -103,12 +106,18 @@ export class TaskCardComponent {
   complete(): void {
     if (this.completing()) return;
     this.completing.set(true);
+    clearTimeout(this.completeErrorTimeout);
+    this.completeError.set(null);
     this.taskService.completeTask(this.task.id).subscribe({
       next: () => {
         this.completing.set(false);
         this.completed.emit();
       },
-      error: () => this.completing.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.completing.set(false);
+        this.completeError.set(err.status === 409 ? err.error?.error ?? 'Already completed today' : 'Could not complete task - try again');
+        this.completeErrorTimeout = setTimeout(() => this.completeError.set(null), 4000);
+      }
     });
   }
 

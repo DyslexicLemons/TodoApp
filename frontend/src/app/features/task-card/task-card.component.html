@@ -26,9 +26,14 @@
         }
       </div>
     </div>
-    <button class="complete-btn" type="button" [disabled]="completing()" (click)="complete()">
-      {{ completing() ? '...' : 'Done' }}
-    </button>
+    <div class="task-card__complete">
+      <button class="complete-btn" type="button" [disabled]="completing()" (click)="complete()">
+        {{ completing() ? '...' : 'Done' }}
+      </button>
+      @if (completeError(); as error) {
+        <span class="complete-error">{{ error }}</span>
+      }
+    </div>
   </div>
 
   <div class="task-card__detail-wrap" [class.is-open]="isOpen()">
