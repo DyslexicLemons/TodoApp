@@ -28,6 +28,10 @@ export class TaskService {
     return this.http.post<Task>(`${API_BASE_URL}/tasks`, task);
   }
 
+  updateTask(id: string, changes: Partial<NewTask>): Observable<Task> {
+    return this.http.patch<Task>(`${API_BASE_URL}/tasks/${id}`, changes);
+  }
+
   completeTask(id: string): Observable<Task> {
     return this.http.post<Task>(`${API_BASE_URL}/tasks/${id}/complete`, {});
   }

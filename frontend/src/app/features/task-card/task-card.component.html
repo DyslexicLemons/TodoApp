@@ -22,17 +22,70 @@
     <div class="task-card__detail-inner">
       @if (detail(); as d) {
         <div class="task-card__detail">
-          @if (d.task.description) {
-            <p class="detail-description">{{ d.task.description }}</p>
+          @if (!editing()) {
+            @if (d.task.description) {
+              <p class="detail-description">{{ d.task.description }}</p>
+            }
+            <p class="detail-tip"><strong>Make it easier:</strong> {{ d.easierTip }}</p>
+            @if (d.fact) {
+              <p class="detail-fact">💡 {{ d.fact }}</p>
+            }
+            <p class="detail-stats">
+              Completed {{ d.stats.totalCompletions }} time{{ d.stats.totalCompletions === 1 ? '' : 's' }} ·
+              current streak {{ d.stats.currentStreak }}
+            </p>
+            <button type="button" class="edit-btn" (click)="startEdit()">Edit</button>
+          } @else {
+            <form class="edit-form" [formGroup]="editForm" (ngSubmit)="saveEdit()">
+              <label>
+                Title
+                <input type="text" formControlName="title" autocomplete="off" />
+              </label>
+
+              <label>
+                Description
+                <textarea formControlName="description" rows="2"></textarea>
+              </label>
+
+              <div class="edit-form__grid">
+                <label>
+                  Category
+                  <select formControlName="category">
+                    @for (c of categories; track c) {
+                      <option [value]="c">{{ c }}</option>
+                    }
+                  </select>
+                </label>
+
+                <label>
+                  Due date
+                  <input type="date" formControlName="dueDate" />
+                </label>
+
+                <label>
+                  Est. hours
+                  <input type="number" formControlName="estimatedHours" min="0" step="1" />
+                </label>
+
+                <label>
+                  Est. minutes
+                  <input type="number" formControlName="estimatedMins" min="0" max="59" step="5" />
+                </label>
+              </div>
+
+              <label class="checkbox-row">
+                <input type="checkbox" formControlName="isMustDo" />
+                Must Do
+              </label>
+
+              <div class="edit-form__actions">
+                <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+                <button type="submit" class="btn-primary" [disabled]="editForm.invalid || savingEdit()">
+                  {{ savingEdit() ? 'Saving...' : 'Save' }}
+                </button>
+              </div>
+            </form>
           }
-          <p class="detail-tip"><strong>Make it easier:</strong> {{ d.easierTip }}</p>
-          @if (d.fact) {
-            <p class="detail-fact">💡 {{ d.fact }}</p>
-          }
-          <p class="detail-stats">
-            Completed {{ d.stats.totalCompletions }} time{{ d.stats.totalCompletions === 1 ? '' : 's' }} ·
-            current streak {{ d.stats.currentStreak }}
-          </p>
         </div>
       } @else if (loadingDetail()) {
         <div class="task-card__detail task-card__detail--loading">Loading...</div>

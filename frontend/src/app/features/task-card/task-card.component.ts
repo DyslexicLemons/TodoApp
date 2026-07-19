@@ -1,31 +1,61 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
-import { Task, TaskDetail, formatEstimatedTime } from '../../core/models/task.model';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TASK_CATEGORIES, Task, TaskCategory, TaskDetail, formatEstimatedTime } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
+import { TaskRefreshService } from '../../core/services/task-refresh.service';
 
 @Component({
   selector: 'app-task-card',
   standalone: true,
+  imports: [ReactiveFormsModule],
   templateUrl: './task-card.component.html',
   styleUrl: './task-card.component.scss'
 })
 export class TaskCardComponent {
+  private fb = inject(FormBuilder);
   private taskService = inject(TaskService);
+  private taskRefresh = inject(TaskRefreshService);
 
   @Input({ required: true }) task!: Task;
   @Input() showLength = false;
   @Output() completed = new EventEmitter<void>();
 
   formatEstimatedTime = formatEstimatedTime;
+  readonly categories = TASK_CATEGORIES;
 
   detail = signal<TaskDetail | null>(null);
   loadingDetail = signal(false);
   completing = signal(false);
   isOpen = signal(false);
+  hovering = signal(false);
+  editing = signal(false);
+  savingEdit = signal(false);
   private closeTimeout?: ReturnType<typeof setTimeout>;
+
+  editForm = this.fb.nonNullable.group({
+    title: ['', Validators.required],
+    description: [''],
+    dueDate: [''],
+    category: ['Health' as TaskCategory, Validators.required],
+    estimatedHours: [0, [Validators.required, Validators.min(0)]],
+    estimatedMins: [0, [Validators.required, Validators.min(0), Validators.max(59)]],
+    isMustDo: [false]
+  });
 
   onHoverStart(): void {
     clearTimeout(this.closeTimeout);
+    this.hovering.set(true);
     this.isOpen.set(true);
+    this.refreshDetail();
+  }
+
+  onHoverEnd(): void {
+    this.hovering.set(false);
+    if (this.editing()) return;
+    this.maybeClose();
+  }
+
+  private refreshDetail(): void {
     this.loadingDetail.set(true);
     this.taskService.getTaskDetail(this.task.id).subscribe((detail) => {
       this.detail.set(detail);
@@ -33,7 +63,8 @@ export class TaskCardComponent {
     });
   }
 
-  onHoverEnd(): void {
+  private maybeClose(): void {
+    if (this.hovering()) return;
     this.isOpen.set(false);
     // Keep the detail content mounted through the close transition (see
     // task-card__detail-wrap in the template) - clearing it immediately would
@@ -56,11 +87,66 @@ export class TaskCardComponent {
     });
   }
 
+  startEdit(): void {
+    this.editForm.reset({
+      title: this.task.title,
+      description: this.task.description,
+      dueDate: this.formattedDueDateForInput(),
+      category: this.task.category,
+      estimatedHours: Math.floor(this.task.estimatedMinutes / 60),
+      estimatedMins: this.task.estimatedMinutes % 60,
+      isMustDo: this.task.isMustDo
+    });
+    this.editing.set(true);
+  }
+
+  cancelEdit(): void {
+    this.editing.set(false);
+    this.maybeClose();
+  }
+
+  saveEdit(): void {
+    if (this.editForm.invalid || this.savingEdit()) return;
+    const value = this.editForm.getRawValue();
+    const estimatedMinutes = value.estimatedHours * 60 + value.estimatedMins;
+    if (estimatedMinutes < 1) return;
+
+    this.savingEdit.set(true);
+    this.taskService
+      .updateTask(this.task.id, {
+        title: value.title,
+        description: value.description,
+        dueDate: value.dueDate || null,
+        category: value.category as TaskCategory,
+        estimatedMinutes,
+        isMustDo: value.isMustDo
+      })
+      .subscribe({
+        next: () => {
+          this.savingEdit.set(false);
+          this.editing.set(false);
+          this.refreshDetail();
+          this.taskRefresh.notify();
+          this.maybeClose();
+        },
+        error: () => this.savingEdit.set(false)
+      });
+  }
+
   formattedDueDate(): string | null {
     if (!this.task.dueDate) return null;
     // dueDate is a date-only value stored as UTC midnight - read UTC parts
     // so the displayed day doesn't shift backward in timezones behind UTC.
     const d = new Date(this.task.dueDate);
     return `${d.getUTCMonth() + 1}/${d.getUTCDate()}/${d.getUTCFullYear()}`;
+  }
+
+  private formattedDueDateForInput(): string {
+    if (!this.task.dueDate) return '';
+    // Same UTC-read rationale as formattedDueDate, formatted for <input type="date">.
+    const d = new Date(this.task.dueDate);
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${d.getUTCFullYear()}-${month}-${day}`;
   }
 }
