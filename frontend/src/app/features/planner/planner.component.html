@@ -1,0 +1,24 @@
+<div class="planner-view">
+  <h2 class="section-title">This Week's Plan</h2>
+
+  @if (plan(); as p) {
+    <app-week-grid [plan]="p"></app-week-grid>
+
+    @if (p.unscheduled.length > 0) {
+      <section class="unscheduled-section">
+        <h3 class="section-subtitle">Didn't fit this week</h3>
+        <ul class="unscheduled-list">
+          @for (item of p.unscheduled; track item.taskId) {
+            <li class="unscheduled-item">
+              <span class="unscheduled-item__title">{{ item.title }}</span>
+              <span class="unscheduled-item__reason">{{ item.reason }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  } @else if (loading()) {
+    <p class="empty-state">Building your week...</p>
+  }
+
+</div>

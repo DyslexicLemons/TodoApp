@@ -1,0 +1,50 @@
+<div class="settings-view">
+  <section class="schedule-section">
+    <h2 class="section-title">Work Schedule</h2>
+    <p class="section-hint">
+      Hours here are treated as busy when the Planner builds your weekly schedule. Toggle a day off to leave
+      it fully free.
+    </p>
+
+    <div class="schedule-grid">
+      @for (day of days; track $index) {
+        <div class="schedule-row" [formGroup]="day">
+          <label class="schedule-row__toggle">
+            <input type="checkbox" formControlName="enabled" />
+            {{ dayLabels[$index] }}
+          </label>
+          <input type="time" formControlName="start" [class.schedule-row__time--dimmed]="!day.value.enabled" />
+          <span class="schedule-row__sep">to</span>
+          <input type="time" formControlName="end" [class.schedule-row__time--dimmed]="!day.value.enabled" />
+        </div>
+      }
+    </div>
+
+    <div class="schedule-actions">
+      <button type="button" class="btn-primary" [disabled]="saving()" (click)="save()">
+        {{ saving() ? 'Saving...' : 'Save Schedule' }}
+      </button>
+      @if (savedMessage()) {
+        <span class="save-confirmation">Saved!</span>
+      }
+    </div>
+  </section>
+
+  <section class="calendar-section">
+    <h2 class="section-title">Google Calendar</h2>
+    @if (justConnected()) {
+      <p class="connect-confirmation">Google Calendar connected!</p>
+    }
+    @if (calendarStatus(); as status) {
+      @if (status.connected) {
+        <p class="section-hint">Connected as {{ status.googleAccountEmail || 'your Google account' }}.</p>
+        <button type="button" class="btn-secondary" (click)="disconnectCalendar()">Disconnect</button>
+      } @else {
+        <p class="section-hint">
+          Connect your Google Calendar so the Planner avoids times you're already busy.
+        </p>
+        <button type="button" class="btn-primary" (click)="connectCalendar()">Connect Google Calendar</button>
+      }
+    }
+  </section>
+</div>

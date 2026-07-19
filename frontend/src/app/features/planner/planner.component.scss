@@ -1,0 +1,59 @@
+.planner-view {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 3rem;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.section-subtitle {
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  margin: 0 0 1rem;
+}
+
+.empty-state {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.unscheduled-section {
+  background: var(--color-surface);
+  border: var(--border-width, 1px) solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.unscheduled-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.unscheduled-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.unscheduled-item__title {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.unscheduled-item__reason {
+  opacity: 0.65;
+}

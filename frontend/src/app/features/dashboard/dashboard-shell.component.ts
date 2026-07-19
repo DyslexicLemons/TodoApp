@@ -22,7 +22,9 @@ export class DashboardShellComponent {
     { label: 'Small', path: '/tasks/small', muted: false },
     { label: 'Medium', path: '/tasks/medium', muted: false },
     { label: 'Long-Term', path: '/tasks/long-term', muted: false },
-    { label: 'Completed Task History', path: '/history', muted: true }
+    { label: 'Planner', path: '/planner', muted: false },
+    { label: 'Completed Task History', path: '/history', muted: true },
+    { label: 'Settings', path: '/settings', muted: true }
   ];
 
   isAddTaskOpen = signal(false);

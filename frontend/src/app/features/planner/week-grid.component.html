@@ -1,0 +1,25 @@
+<div class="week-grid">
+  @for (column of columns(); track column.label) {
+    <div class="day-column" [class.day-column--past]="column.isPast">
+      <div class="day-column__header">
+        <span class="day-column__label">{{ column.label }}</span>
+        <span class="day-column__date">{{ column.dateLabel }}</span>
+      </div>
+
+      @if (column.noCapacity) {
+        <p class="day-column__empty">No free time</p>
+      } @else if (column.items.length === 0) {
+        <p class="day-column__empty">Nothing planned</p>
+      } @else {
+        <ul class="day-column__items">
+          @for (item of column.items; track item.taskId + item.timeLabel) {
+            <li class="task-block" [class.task-block--must-do]="item.isMustDo">
+              <span class="task-block__time">{{ item.timeLabel }}</span>
+              <span class="task-block__title">{{ item.title }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

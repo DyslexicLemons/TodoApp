@@ -119,6 +119,34 @@ body {
   --shadow: none;
 }
 
+/* Planner: cool teal/cyan, reads as "scheduling" - distinct from Small's blue */
+[data-theme='planner'] {
+  --color-bg: #f2fbfa;
+  --color-surface: #ffffff;
+  --color-text: #163330;
+  --color-border: #bfe6e2;
+  --color-accent: #1f9c92;
+  --color-on-accent: #ffffff;
+  --font-heading: 'Nunito', system-ui, sans-serif;
+  --radius: 12px;
+  --border-width: 1px;
+  --shadow: 0 1px 6px rgba(31, 156, 146, 0.12);
+}
+
+/* Settings: neutral/desaturated, same family as History since it's a utility view */
+[data-theme='settings'] {
+  --color-bg: #f4f4f5;
+  --color-surface: #ffffff;
+  --color-text: #2c2c2e;
+  --color-border: #dcdcdf;
+  --color-accent: #8a8a8a;
+  --color-on-accent: #ffffff;
+  --font-heading: 'Nunito', system-ui, sans-serif;
+  --radius: 10px;
+  --border-width: 1px;
+  --shadow: none;
+}
+
 /* Dark mode: per-theme overrides, toggled via the settings menu (adds .dark-mode to <html>) */
 html.dark-mode[data-theme='home'] {
   --color-bg: #191726;
@@ -182,6 +210,25 @@ html.dark-mode[data-theme='long-term'] {
 }
 
 html.dark-mode[data-theme='history'] {
+  --color-bg: #1a1a1c;
+  --color-surface: #232325;
+  --color-text: #e8e8ea;
+  --color-border: #3a3a3d;
+  --color-accent: #a3a3a6;
+  --color-on-accent: #1a1a1c;
+}
+
+html.dark-mode[data-theme='planner'] {
+  --color-bg: #0f1e1c;
+  --color-surface: #172b28;
+  --color-text: #e3f6f4;
+  --color-border: #2a4a46;
+  --color-accent: #35c2b6;
+  --color-on-accent: #0b1a18;
+  --shadow: 0 1px 10px rgba(53, 194, 182, 0.25);
+}
+
+html.dark-mode[data-theme='settings'] {
   --color-bg: #1a1a1c;
   --color-surface: #232325;
   --color-text: #e8e8ea;
