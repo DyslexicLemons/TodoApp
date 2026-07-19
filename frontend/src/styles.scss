@@ -77,16 +77,66 @@ body {
   --shadow: 0 2px 10px rgba(224, 138, 43, 0.2);
 }
 
-/* Long-Term: hardcore, high-stakes, cyberpunk-leaning */
+/* Long-Term: hardcore, high-stakes, cyberpunk-leaning - dramatic without going flat black */
 [data-theme='long-term'] {
-  --color-bg: #0c0c10;
-  --color-surface: #17161f;
-  --color-text: #eef0ff;
-  --color-border: #3a3550;
+  --color-bg: #241436;
+  --color-surface: #2f1a44;
+  --color-text: #f3eaff;
+  --color-border: #5b3f82;
   --color-accent: #ff2e63;
-  --color-on-accent: #0c0c10;
+  --color-on-accent: #241436;
   --font-heading: 'Orbitron', 'Rubik', system-ui, sans-serif;
   --radius: 3px;
   --border-width: 1px;
-  --shadow: 0 0 16px rgba(255, 46, 99, 0.55);
+  --shadow: 0 0 18px rgba(255, 46, 99, 0.45), 0 0 32px rgba(140, 70, 255, 0.2);
+}
+
+/* Dark mode: per-theme overrides, toggled via the settings menu (adds .dark-mode to <html>) */
+html.dark-mode[data-theme='home'] {
+  --color-bg: #191726;
+  --color-surface: #232032;
+  --color-text: #eae8f7;
+  --color-border: #3d3856;
+  --color-accent: #9b8cf7;
+  --color-on-accent: #17141f;
+  --shadow: 0 1px 10px rgba(124, 111, 240, 0.35);
+}
+
+html.dark-mode[data-theme='quick'] {
+  --color-bg: #171b16;
+  --color-surface: #202821;
+  --color-text: #e9f3ec;
+  --color-border: #37452e;
+  --color-accent: #8fd6a8;
+  --color-on-accent: #123018;
+}
+
+html.dark-mode[data-theme='small'] {
+  --color-bg: #12161d;
+  --color-surface: #1b232e;
+  --color-text: #e6edf5;
+  --color-border: #2e3c4c;
+  --color-accent: #6aa9e0;
+  --color-on-accent: #0b141c;
+  --shadow: 0 1px 8px rgba(106, 169, 224, 0.25);
+}
+
+html.dark-mode[data-theme='medium'] {
+  --color-bg: #1c150c;
+  --color-surface: #261d10;
+  --color-text: #f5ead2;
+  --color-border: #4a3a1f;
+  --color-accent: #f0a545;
+  --color-on-accent: #1c1004;
+  --shadow: 0 2px 14px rgba(224, 138, 43, 0.3);
+}
+
+html.dark-mode[data-theme='long-term'] {
+  --color-bg: #150a22;
+  --color-surface: #1e1030;
+  --color-text: #f7eeff;
+  --color-border: #7a4fc2;
+  --color-accent: #ff3f74;
+  --color-on-accent: #150a22;
+  --shadow: 0 0 26px rgba(255, 46, 99, 0.65), 0 0 50px rgba(150, 70, 255, 0.35);
 }

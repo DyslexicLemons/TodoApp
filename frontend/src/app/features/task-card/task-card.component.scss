@@ -11,6 +11,57 @@
   }
 }
 
+/* Long-Term: legendary-item shimmer frame instead of relying on a black backdrop for drama */
+:host-context([data-theme='long-term']) .task-card {
+  position: relative;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+}
+
+:host-context([data-theme='long-term']) .task-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(90deg, #ff2e63, #8c46ff, #ff2e63, #8c46ff);
+  background-size: 300% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: epicShimmer 6s linear infinite;
+  pointer-events: none;
+}
+
+:host-context([data-theme='long-term']) .task-card__title {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 8px var(--color-accent);
+}
+
+:host-context([data-theme='long-term']) .complete-btn {
+  animation: epicButtonPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes epicShimmer {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 300% 0;
+  }
+}
+
+@keyframes epicButtonPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(255, 46, 99, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(255, 46, 99, 0.85);
+  }
+}
+
 .task-card__row {
   display: flex;
   align-items: center;
@@ -144,6 +195,12 @@
   font-size: 0.8rem;
 }
 
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .edit-btn {
   align-self: flex-start;
   padding: 0.3rem 0.7rem;
@@ -158,6 +215,51 @@
     border-color: var(--color-accent);
     color: var(--color-accent);
   }
+}
+
+.delete-btn {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--color-danger, #d63a3a);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-danger, #d63a3a);
+  font-size: 0.78rem;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-danger, #d63a3a);
+    color: #fff;
+  }
+}
+
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--color-text);
+}
+
+.delete-confirm-btn {
+  padding: 0.3rem 0.7rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-danger, #d63a3a);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.delete-error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-danger, #d63a3a);
 }
 
 .edit-form {

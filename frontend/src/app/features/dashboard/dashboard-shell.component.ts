@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AddTaskModalComponent } from '../add-task/add-task-modal.component';
 import { TaskRefreshService } from '../../core/services/task-refresh.service';
+import { DarkModeService } from '../../core/services/dark-mode.service';
 
 @Component({
   selector: 'app-dashboard-shell',
@@ -12,6 +13,8 @@ import { TaskRefreshService } from '../../core/services/task-refresh.service';
 })
 export class DashboardShellComponent {
   private taskRefresh = inject(TaskRefreshService);
+  private darkMode = inject(DarkModeService);
+  private elementRef = inject(ElementRef);
 
   readonly tabs = [
     { label: 'Home', path: '/home' },
@@ -22,6 +25,8 @@ export class DashboardShellComponent {
   ];
 
   isAddTaskOpen = signal(false);
+  isSettingsOpen = signal(false);
+  isDarkMode = this.darkMode.isDark;
 
   openAddTask(): void {
     this.isAddTaskOpen.set(true);
@@ -34,5 +39,22 @@ export class DashboardShellComponent {
   onTaskCreated(): void {
     this.isAddTaskOpen.set(false);
     this.taskRefresh.notify();
+  }
+
+  toggleSettings(): void {
+    this.isSettingsOpen.update((open) => !open);
+  }
+
+  toggleDarkMode(): void {
+    this.darkMode.toggle();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.isSettingsOpen()) return;
+    const menu = this.elementRef.nativeElement.querySelector('.settings-menu');
+    if (menu && !menu.contains(event.target as Node)) {
+      this.isSettingsOpen.set(false);
+    }
   }
 }
