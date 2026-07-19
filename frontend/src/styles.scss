@@ -34,6 +34,19 @@ body {
   --radius: 14px;
   --border-width: 1px;
   --shadow: 0 1px 6px rgba(90, 70, 180, 0.1);
+
+  /* Cozy background vignettes (HomeBackgroundComponent) */
+  --scene-sage: #9fc39a;
+  --scene-sage-dark: #6e9c6c;
+  --scene-sand: #e3c393;
+  --scene-sand-dark: #c9a06a;
+  --scene-rose: #e3aab8;
+  --scene-rose-dark: #c97f92;
+  --scene-metal: #c3c7d1;
+  --scene-metal-dark: #9298a4;
+  --scene-ink: rgba(44, 42, 58, 0.55);
+  --scene-text-soft: rgba(44, 42, 58, 0.6);
+  --scene-shadow-blob: rgba(124, 111, 240, 0.08);
 }
 
 /* Quick: relaxed, minimal, pressure-free */
@@ -115,6 +128,18 @@ html.dark-mode[data-theme='home'] {
   --color-accent: #9b8cf7;
   --color-on-accent: #17141f;
   --shadow: 0 1px 10px rgba(124, 111, 240, 0.35);
+
+  --scene-sage: #7fae7a;
+  --scene-sage-dark: #5c8a5a;
+  --scene-sand: #c9a06e;
+  --scene-sand-dark: #a9814f;
+  --scene-rose: #c98a97;
+  --scene-rose-dark: #a8677a;
+  --scene-metal: #9aa0ac;
+  --scene-metal-dark: #767c88;
+  --scene-ink: rgba(234, 232, 247, 0.55);
+  --scene-text-soft: rgba(234, 232, 247, 0.6);
+  --scene-shadow-blob: rgba(155, 140, 247, 0.14);
 }
 
 html.dark-mode[data-theme='quick'] {

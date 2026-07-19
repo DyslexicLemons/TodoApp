@@ -6,11 +6,12 @@ import { TaskRefreshService } from '../../core/services/task-refresh.service';
 import { CategoryTasks } from '../../core/models/task.model';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { CompletedPanelComponent } from '../completed-panel/completed-panel.component';
+import { HomeBackgroundComponent } from './home-background/home-background.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [TaskListComponent, CompletedPanelComponent],
+  imports: [TaskListComponent, CompletedPanelComponent, HomeBackgroundComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

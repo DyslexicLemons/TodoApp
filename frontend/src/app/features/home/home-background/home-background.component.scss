@@ -1,0 +1,111 @@
+:host {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+}
+
+.mote {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0.16;
+  animation: bg-drift 14s ease-in-out infinite;
+}
+
+/* Vignettes anchored around the edges. The bottom-right corner is left
+   clear on purpose — that's where the completed-panel (position: fixed)
+   lives, so nothing gets planted underneath it. */
+.vignette {
+  position: absolute;
+  width: 132px;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.06));
+
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.vignette--reading    { top: 2%;  left: 3%; }
+.vignette--knitting   { top: 15%; left: 2%;   width: 118px; }
+.vignette--stretch    { top: 28%; left: 1.5%; width: 104px; }
+.vignette--meditating { top: 41%; left: 3%;   width: 108px; }
+.vignette--laundry    { top: 54%; left: 2%;   width: 126px; }
+.vignette--watering   { bottom: 2%; left: 5%; width: 140px; }
+
+.vignette--tea         { top: 4%;  right: 4%; width: 118px; }
+.vignette--journaling  { top: 19%; right: 3%; width: 112px; }
+.vignette--cat         { top: 34%; right: 2%; width: 96px; }
+.vignette--baking      { top: 49%; right: 3%; width: 122px; }
+
+@media (max-width: 1300px) {
+  .vignette--knitting, .vignette--stretch, .vignette--meditating, .vignette--laundry,
+  .vignette--journaling, .vignette--cat, .vignette--baking {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  .vignette { opacity: 0.55; transform: scale(0.8); }
+  .vignette--watering { transform: scale(0.68); }
+}
+
+.bob { animation: bg-bob 5s ease-in-out infinite; transform-origin: 50% 85%; }
+.sway { animation: bg-sway 4.5s ease-in-out infinite; transform-origin: 50% 95%; }
+.rise { animation: bg-rise 3.2s ease-in-out infinite; }
+.fall { animation: bg-fall 1.4s ease-in infinite; }
+.tailwag { animation: bg-tailwag 2.6s ease-in-out infinite; transform-origin: 100% 50%; }
+.page-turn { animation: bg-pageturn 4.8s ease-in-out infinite; transform-origin: 0% 50%; }
+.twinkle { animation: bg-twinkle 2.1s ease-in-out infinite; transform-origin: center; }
+.stir { animation: bg-stir 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mote, .bob, .sway, .rise, .fall, .tailwag, .page-turn, .twinkle, .stir {
+    animation: none !important;
+  }
+}
+
+@keyframes bg-drift {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.1; }
+  50% { transform: translateY(-18px) translateX(6px); opacity: 0.22; }
+}
+@keyframes bg-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes bg-sway {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50% { transform: rotate(2.5deg); }
+}
+@keyframes bg-rise {
+  0% { transform: translateY(0) scale(1); opacity: 0.55; }
+  100% { transform: translateY(-14px) scale(1.15); opacity: 0; }
+}
+@keyframes bg-fall {
+  0% { transform: translateY(0); opacity: 0.7; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+@keyframes bg-tailwag {
+  0%, 100% { transform: rotate(8deg); }
+  50% { transform: rotate(-6deg); }
+}
+@keyframes bg-pageturn {
+  0%, 40%, 100% { transform: rotateY(0deg); }
+  50% { transform: rotateY(-25deg); }
+}
+@keyframes bg-twinkle {
+  0%, 100% { transform: scale(0.8); opacity: 0.6; }
+  50% { transform: scale(1.25); opacity: 1; }
+}
+@keyframes bg-stir {
+  0%, 100% { transform: rotate(-14deg); }
+  50% { transform: rotate(14deg); }
+}
