@@ -27,6 +27,15 @@ export class CompletedPanelComponent implements OnInit, OnDestroy {
     this.hoveredRect.set((event.currentTarget as HTMLElement).getBoundingClientRect());
   }
 
+  onUncomplete(taskId: string, event: MouseEvent): void {
+    event.stopPropagation();
+    this.taskService.uncompleteTask(taskId).subscribe(() => {
+      this.hoveredTaskId.set(null);
+      this.load();
+      this.taskRefresh.notify();
+    });
+  }
+
   ngOnInit(): void {
     this.load();
     this.refreshSub = this.taskRefresh.onChange.subscribe(() => this.load());

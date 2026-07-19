@@ -36,6 +36,10 @@ export class TaskService {
     return this.http.post<Task>(`${API_BASE_URL}/tasks/${id}/complete`, {});
   }
 
+  uncompleteTask(id: string): Observable<Task> {
+    return this.http.post<Task>(`${API_BASE_URL}/tasks/${id}/uncomplete`, {});
+  }
+
   deleteTask(id: string): Observable<void> {
     return this.http.delete<void>(`${API_BASE_URL}/tasks/${id}`);
   }

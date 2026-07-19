@@ -14,6 +14,15 @@
       >
         <app-streak-flame-icon [streak]="task.currentStreak"></app-streak-flame-icon>
         <span class="completed-title">{{ task.title }}</span>
+        <button
+          type="button"
+          class="uncomplete-btn"
+          title="Undo completion"
+          aria-label="Undo completion"
+          (click)="onUncomplete(task.id, $event)"
+        >
+          &times;
+        </button>
 
         @if (hoveredTaskId() === task.id && hoveredRect(); as rect) {
           <app-accomplishment-popup [task]="task" [anchorRect]="rect"></app-accomplishment-popup>

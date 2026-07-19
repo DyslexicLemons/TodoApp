@@ -2,9 +2,11 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   applyCompletion,
+  undoCompletion,
   flameTierForStreak,
   AlreadyCompletedTodayError,
   AlreadyCompletedError,
+  NothingToUndoError,
 } = require("../src/services/streakService");
 
 function daysAgo(n, from = new Date()) {
@@ -145,6 +147,48 @@ test("one-time task: completing again ever throws AlreadyCompletedError", () => 
   const past = daysAgo(30);
   const task = { frequency: "One-Time", currentStreak: 1, lastCompletedDate: past, completionHistory: [past] };
   assert.throws(() => applyCompletion(task), AlreadyCompletedError);
+});
+
+test("undoing today's completion restores the prior streak and history", () => {
+  const yesterday = daysAgo(1);
+  const task = {
+    lastCompletedDate: new Date(),
+    currentStreak: 3,
+    completionHistory: [daysAgo(2), yesterday, new Date()],
+  };
+  const result = undoCompletion(task);
+  assert.equal(result.currentStreak, 2);
+  assert.equal(result.completionHistory.length, 2);
+  assert.equal(new Date(result.lastCompletedDate).toDateString(), yesterday.toDateString());
+});
+
+test("undoing a task's only completion clears streak and lastCompletedDate", () => {
+  const task = { lastCompletedDate: new Date(), currentStreak: 1, completionHistory: [new Date()] };
+  const result = undoCompletion(task);
+  assert.equal(result.currentStreak, 0);
+  assert.equal(result.completionHistory.length, 0);
+  assert.equal(result.lastCompletedDate, null);
+});
+
+test("undoing a task not completed today throws NothingToUndoError", () => {
+  const task = { lastCompletedDate: daysAgo(1), currentStreak: 2, completionHistory: [daysAgo(1)] };
+  assert.throws(() => undoCompletion(task), NothingToUndoError);
+});
+
+test("undoing a weekly task's completion restores the pre-completion streak", () => {
+  const now = new Date("2024-01-17T12:00:00"); // Wednesday
+  const monday = new Date("2024-01-15T12:00:00");
+  const tuesday = new Date("2024-01-16T12:00:00");
+  const task = {
+    frequency: "Weekly",
+    targetCount: 3,
+    currentStreak: 1,
+    lastCompletedDate: now,
+    completionHistory: [monday, tuesday, now],
+  };
+  const result = undoCompletion(task, now);
+  assert.equal(result.currentStreak, 0);
+  assert.equal(result.completionHistory.length, 2);
 });
 
 test("flame tier thresholds", () => {

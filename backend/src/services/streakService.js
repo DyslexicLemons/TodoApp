@@ -16,6 +16,13 @@ class AlreadyCompletedError extends Error {
   }
 }
 
+class NothingToUndoError extends Error {
+  constructor() {
+    super("Task was not completed today");
+    this.name = "NothingToUndoError";
+  }
+}
+
 /**
  * Streak transition for a Weekly/Monthly task on the completion that reaches
  * its period target. Increments only if the previous qualifying period was the
@@ -93,10 +100,65 @@ function applyCompletion(task, now = new Date()) {
   };
 }
 
+/**
+ * Replays completionHistory (ascending) through the same transition rules as
+ * applyCompletion, from a blank state, to reconstruct the streak/lastCompletedDate
+ * that would have resulted. Used to recompute state after removing an entry.
+ */
+function computeStreakState(frequency, targetCount, history) {
+  let state = { currentStreak: 0, lastCompletedDate: null, completionHistory: [] };
+
+  for (const date of history) {
+    let nextStreak;
+    if (frequency === "Weekly" || frequency === "Monthly") {
+      nextStreak = nextPeriodStreak(frequency, { ...state, targetCount }, date);
+    } else if (frequency === "One-Time") {
+      nextStreak = 1;
+    } else if (!state.lastCompletedDate) {
+      nextStreak = 1;
+    } else {
+      const gap = daysBetween(state.lastCompletedDate, date);
+      nextStreak = gap === 1 ? state.currentStreak + 1 : 1;
+    }
+    state = {
+      currentStreak: nextStreak,
+      lastCompletedDate: date,
+      completionHistory: [...state.completionHistory, date],
+    };
+  }
+
+  return { currentStreak: state.currentStreak, lastCompletedDate: state.lastCompletedDate };
+}
+
+/**
+ * Reverses the most recent completion, provided it happened today. Recomputes
+ * streak/lastCompletedDate by replaying the remaining history rather than just
+ * decrementing, since Weekly/Monthly streaks don't move on every completion.
+ * Does not persist - caller is responsible for saving the task.
+ */
+function undoCompletion(task, now = new Date()) {
+  if (!task.lastCompletedDate || !isSameDay(task.lastCompletedDate, now)) {
+    throw new NothingToUndoError();
+  }
+
+  const frequency = task.frequency || "Daily";
+  const sortedHistory = [...task.completionHistory].sort((a, b) => new Date(a) - new Date(b));
+  const remainingHistory = sortedHistory.slice(0, -1);
+  const { currentStreak, lastCompletedDate } = computeStreakState(frequency, task.targetCount, remainingHistory);
+
+  return {
+    currentStreak,
+    completionHistory: remainingHistory,
+    lastCompletedDate,
+  };
+}
+
 module.exports = {
   applyCompletion,
+  undoCompletion,
   flameTierForStreak,
   AlreadyCompletedTodayError,
   AlreadyCompletedError,
+  NothingToUndoError,
   FLAME_TIERS,
 };

@@ -10,6 +10,7 @@ router.get("/", asyncHandler(controller.listByLength));
 router.post("/", asyncHandler(controller.createTask));
 router.get("/:id", asyncHandler(controller.getTaskDetail));
 router.post("/:id/complete", asyncHandler(controller.completeTask));
+router.post("/:id/uncomplete", asyncHandler(controller.uncompleteTask));
 router.patch("/:id", asyncHandler(controller.updateTask));
 router.delete("/:id", asyncHandler(controller.deleteTask));
 

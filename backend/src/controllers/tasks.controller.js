@@ -1,7 +1,13 @@
 const { Task, LENGTHS } = require("../models/Task");
 const { minutesRangeForLength } = require("../services/taskTimeService");
 const { sortTasksForCategory } = require("../services/taskSortService");
-const { applyCompletion, AlreadyCompletedTodayError, AlreadyCompletedError } = require("../services/streakService");
+const {
+  applyCompletion,
+  undoCompletion,
+  AlreadyCompletedTodayError,
+  AlreadyCompletedError,
+  NothingToUndoError,
+} = require("../services/streakService");
 const { getRandomFact, getEasierTip } = require("../services/factService");
 const { isSameDay } = require("../services/dateUtil");
 const { isDoneForCurrentPeriod } = require("../services/frequencyService");
@@ -78,6 +84,25 @@ async function completeTask(req, res) {
   }
 }
 
+async function uncompleteTask(req, res) {
+  const task = await Task.findById(req.params.id);
+  if (!task) return res.status(404).json({ error: "Task not found" });
+
+  try {
+    const update = undoCompletion(task);
+    task.currentStreak = update.currentStreak;
+    task.completionHistory = update.completionHistory;
+    task.lastCompletedDate = update.lastCompletedDate;
+    await task.save();
+    res.json(task);
+  } catch (err) {
+    if (err instanceof NothingToUndoError) {
+      return res.status(409).json({ error: err.message });
+    }
+    throw err;
+  }
+}
+
 async function updateTask(req, res) {
   const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -100,6 +125,7 @@ module.exports = {
   createTask,
   getTaskDetail,
   completeTask,
+  uncompleteTask,
   updateTask,
   deleteTask,
 };
