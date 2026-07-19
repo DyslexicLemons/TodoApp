@@ -18,7 +18,7 @@
         @if (task.frequency !== 'Daily') {
           <span class="badge badge--frequency">{{ task.frequency }}</span>
         }
-        @if (periodProgress; as progress) {
+        @if (task.frequency === 'Weekly' && task.targetCount > 1 && periodProgress; as progress) {
           <app-frequency-pie [completed]="progress.completed" [target]="progress.target" [label]="progress.label" />
         }
         @if (formattedDueDate(); as due) {
