@@ -30,7 +30,6 @@ export class TaskCardComponent {
   private taskRefresh = inject(TaskRefreshService);
 
   @Input({ required: true }) task!: Task;
-  @Input() showLength = false;
   @Output() completed = new EventEmitter<void>();
 
   formatEstimatedTime = formatEstimatedTime;
@@ -106,6 +105,12 @@ export class TaskCardComponent {
     }, 300);
   }
 
+  onCompleteClick(event: MouseEvent): void {
+    if (this.completing()) return;
+    this.launchCompletionFly(event.currentTarget as HTMLElement);
+    this.complete();
+  }
+
   complete(): void {
     if (this.completing()) return;
     this.completing.set(true);
@@ -122,6 +127,31 @@ export class TaskCardComponent {
         this.completeErrorTimeout = setTimeout(() => this.completeError.set(null), 4000);
       }
     });
+  }
+
+  /**
+   * Sends a little glowing checkmark flying from the Complete button toward the
+   * bottom-right corner, where the Completed Today panel lives - purely decorative,
+   * independent of the actual completion request.
+   */
+  private launchCompletionFly(origin: HTMLElement): void {
+    const rect = origin.getBoundingClientRect();
+    const originX = rect.left + rect.width / 2;
+    const originY = rect.top + rect.height / 2;
+    const targetX = window.innerWidth - 150;
+    const targetY = window.innerHeight - 30;
+
+    const ghost = document.createElement('div');
+    ghost.className = 'task-complete-ghost';
+    ghost.textContent = '✓';
+    ghost.style.left = `${originX}px`;
+    ghost.style.top = `${originY}px`;
+    ghost.style.setProperty('--dx', `${targetX - originX}px`);
+    ghost.style.setProperty('--dy', `${targetY - originY}px`);
+    document.body.appendChild(ghost);
+
+    requestAnimationFrame(() => ghost.classList.add('is-flying'));
+    setTimeout(() => ghost.remove(), 800);
   }
 
   startEdit(): void {

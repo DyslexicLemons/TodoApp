@@ -39,7 +39,7 @@
   text-shadow: 0 0 8px var(--color-accent);
 }
 
-:host-context([data-theme='long-term']) .complete-btn {
+:host-context([data-theme='long-term']) .complete-cta {
   animation: epicButtonPulse 2.4s ease-in-out infinite;
 }
 
@@ -123,27 +123,8 @@
   }
 }
 
-.task-card__complete {
+.task-card__duration {
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3rem;
-}
-
-.complete-btn {
-  padding: 0.45rem 0.9rem;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  font-weight: 700;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
 }
 
 .complete-error {
@@ -195,10 +176,43 @@
   font-size: 0.8rem;
 }
 
+.detail-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
 .detail-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.complete-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  margin-left: auto;
+}
+
+.complete-cta {
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
 }
 
 .edit-btn,

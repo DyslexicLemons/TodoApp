@@ -164,3 +164,24 @@ html.dark-mode[data-theme='history'] {
   --color-accent: #a3a3a6;
   --color-on-accent: #1a1a1c;
 }
+
+/* Decorative checkmark spawned by TaskCardComponent when a task is completed - lives
+   outside Angular's view encapsulation since it's appended straight to <body> so it can
+   fly to the Completed Today panel unclipped by any card's overflow. */
+.task-complete-ghost {
+  position: fixed;
+  z-index: 999;
+  transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-accent, #8c46ff);
+  text-shadow: 0 0 6px currentColor, 0 0 16px currentColor;
+  opacity: 1;
+  pointer-events: none;
+  transition: transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.7s ease-in 0.1s;
+
+  &.is-flying {
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.3) rotate(25deg);
+    opacity: 0;
+  }
+}

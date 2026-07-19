@@ -3,18 +3,12 @@
     <div class="task-card__main">
       <h3 class="task-card__title">{{ task.title }}</h3>
       <div class="task-card__meta">
-        <span class="badge badge--time" [attr.data-length]="lengthToSlug(task.length)">
-          {{ formatEstimatedTime(task.estimatedMinutes) }}
-        </span>
         <span class="badge badge--category" [title]="task.category">
           {{ categoryToEmoji(task.category) }}
           @if (isOpen()) {
             {{ task.category }}
           }
         </span>
-        @if (showLength) {
-          <span class="badge badge--length">{{ task.length }}</span>
-        }
         @if (task.frequency !== 'Daily') {
           <span class="badge badge--frequency">{{ task.frequency }}</span>
         }
@@ -26,13 +20,10 @@
         }
       </div>
     </div>
-    <div class="task-card__complete">
-      <button class="complete-btn" type="button" [disabled]="completing()" (click)="complete()">
-        {{ completing() ? '...' : 'Done' }}
-      </button>
-      @if (completeError(); as error) {
-        <span class="complete-error">{{ error }}</span>
-      }
+    <div class="task-card__duration">
+      <span class="badge badge--time" [attr.data-length]="lengthToSlug(task.length)">
+        {{ formatEstimatedTime(task.estimatedMinutes) }}
+      </span>
     </div>
   </div>
 
@@ -55,19 +46,30 @@
                 · {{ progress.label }}
               }
             </p>
-            <div class="detail-actions">
-              <button type="button" class="edit-btn" (click)="startEdit()">Edit</button>
-              @if (!confirmingDelete()) {
-                <button type="button" class="delete-btn" (click)="requestDelete()">Delete</button>
-              } @else {
-                <span class="delete-confirm">
-                  Delete this task?
-                  <button type="button" class="delete-confirm-btn" [disabled]="deleting()" (click)="confirmDelete()">
-                    {{ deleting() ? 'Deleting...' : 'Yes, delete' }}
-                  </button>
-                  <button type="button" class="btn-secondary" (click)="cancelDelete()">Cancel</button>
-                </span>
-              }
+            <div class="detail-footer">
+              <div class="detail-actions">
+                <button type="button" class="edit-btn" (click)="startEdit()">Edit</button>
+                @if (!confirmingDelete()) {
+                  <button type="button" class="delete-btn" (click)="requestDelete()">Delete</button>
+                } @else {
+                  <span class="delete-confirm">
+                    Delete this task?
+                    <button type="button" class="delete-confirm-btn" [disabled]="deleting()" (click)="confirmDelete()">
+                      {{ deleting() ? 'Deleting...' : 'Yes, delete' }}
+                    </button>
+                    <button type="button" class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+                  </span>
+                }
+              </div>
+
+              <div class="complete-control">
+                <button type="button" class="complete-cta" [disabled]="completing()" (click)="onCompleteClick($event)">
+                  {{ completing() ? 'Completing…' : 'Complete ○' }}
+                </button>
+                @if (completeError(); as error) {
+                  <span class="complete-error">{{ error }}</span>
+                }
+              </div>
             </div>
             @if (deleteError(); as error) {
               <p class="delete-error">{{ error }}</p>

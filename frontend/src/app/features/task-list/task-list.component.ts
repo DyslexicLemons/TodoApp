@@ -9,7 +9,7 @@ import { TaskCardComponent } from '../task-card/task-card.component';
   template: `
     <div class="task-list">
       @for (task of tasks; track task.id) {
-        <app-task-card [task]="task" [showLength]="showLength" (completed)="completed.emit()"></app-task-card>
+        <app-task-card [task]="task" (completed)="completed.emit()"></app-task-card>
       }
     </div>
   `,
@@ -25,6 +25,5 @@ import { TaskCardComponent } from '../task-card/task-card.component';
 })
 export class TaskListComponent {
   @Input() tasks: Task[] = [];
-  @Input() showLength = false;
   @Output() completed = new EventEmitter<void>();
 }

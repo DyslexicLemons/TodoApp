@@ -3,7 +3,7 @@
     @if (suggestions().mustDo.length > 0) {
       <section class="must-do-section">
         <h2 class="section-title">MUST Do Today</h2>
-        <app-task-list [tasks]="suggestions().mustDo" [showLength]="true" (completed)="onTaskCompleted()"></app-task-list>
+        <app-task-list [tasks]="suggestions().mustDo" (completed)="onTaskCompleted()"></app-task-list>
       </section>
     }
 
@@ -12,7 +12,7 @@
       @if (!loading() && suggestions().optional.length === 0 && suggestions().mustDo.length === 0) {
         <p class="empty-state">Nothing waiting on you right now — enjoy the break, or add a task to get going.</p>
       }
-      <app-task-list [tasks]="suggestions().optional" [showLength]="true" (completed)="onTaskCompleted()"></app-task-list>
+      <app-task-list [tasks]="suggestions().optional" (completed)="onTaskCompleted()"></app-task-list>
     </section>
   </div>
 
