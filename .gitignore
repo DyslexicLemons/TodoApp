@@ -1,5 +1,35 @@
+# Local-only Claude Code guidance (not shared via git)
+CLAUDE.md
+
+# Dependencies
 node_modules/
+
+# Env files (keep .env.example)
 .env
+.env.*
+!.env.example
+
+# Build output
 dist/
+build/
 .angular/
+
+# Logs
 *.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
