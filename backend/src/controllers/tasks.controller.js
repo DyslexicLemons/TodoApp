@@ -1,9 +1,10 @@
 const { Task, LENGTHS } = require("../models/Task");
 const { minutesRangeForLength } = require("../services/taskTimeService");
 const { sortTasksForCategory } = require("../services/taskSortService");
-const { applyCompletion, AlreadyCompletedTodayError } = require("../services/streakService");
+const { applyCompletion, AlreadyCompletedTodayError, AlreadyCompletedError } = require("../services/streakService");
 const { getRandomFact, getEasierTip } = require("../services/factService");
 const { isSameDay } = require("../services/dateUtil");
+const { isDoneForCurrentPeriod } = require("../services/frequencyService");
 
 async function listByLength(req, res) {
   const { length } = req.query;
@@ -14,9 +15,7 @@ async function listByLength(req, res) {
   const { min, max } = minutesRangeForLength(length);
   const estimatedMinutes = max === Infinity ? { $gt: min } : { $gt: min, $lte: max };
   const tasks = await Task.find({ estimatedMinutes });
-  const activeTasks = tasks.filter(
-    (t) => !t.lastCompletedDate || !isSameDay(t.lastCompletedDate, new Date())
-  );
+  const activeTasks = tasks.filter((t) => !isDoneForCurrentPeriod(t));
 
   const { mustDo, optional } = sortTasksForCategory(activeTasks);
   res.json({ mustDo, optional });
@@ -24,9 +23,7 @@ async function listByLength(req, res) {
 
 async function listSuggestions(req, res) {
   const tasks = await Task.find({});
-  const activeTasks = tasks.filter(
-    (t) => !t.lastCompletedDate || !isSameDay(t.lastCompletedDate, new Date())
-  );
+  const activeTasks = tasks.filter((t) => !isDoneForCurrentPeriod(t));
 
   const { mustDo, optional } = sortTasksForCategory(activeTasks);
   res.json({ mustDo, optional: optional.slice(0, 5) });
@@ -74,7 +71,7 @@ async function completeTask(req, res) {
     await task.save();
     res.json(task);
   } catch (err) {
-    if (err instanceof AlreadyCompletedTodayError) {
+    if (err instanceof AlreadyCompletedTodayError || err instanceof AlreadyCompletedError) {
       return res.status(409).json({ error: err.message, task });
     }
     throw err;

@@ -11,6 +11,8 @@ const taskSchema = new mongoose.Schema(
     estimatedMinutes: { type: Number, required: true, min: 1 },
     category: { type: String, enum: CATEGORIES, required: true },
     isMustDo: { type: Boolean, required: true, default: false },
+    frequency: { type: String, enum: ["Daily", "Weekly", "Monthly", "One-Time"], default: "Daily" },
+    targetCount: { type: Number, default: 1, min: 1 },
     currentStreak: { type: Number, default: 0 },
     completionHistory: { type: [Date], default: [] },
     lastCompletedDate: { type: Date, default: null },
