@@ -4,7 +4,12 @@
       <h3 class="task-card__title">{{ task.title }}</h3>
       <div class="task-card__meta">
         <span class="badge badge--time">{{ formatEstimatedTime(task.estimatedMinutes) }}</span>
-        <span class="badge badge--category">{{ task.category }}</span>
+        <span class="badge badge--category" [title]="task.category">
+          {{ categoryToEmoji(task.category) }}
+          @if (isOpen()) {
+            {{ task.category }}
+          }
+        </span>
         @if (showLength) {
           <span class="badge badge--length">{{ task.length }}</span>
         }

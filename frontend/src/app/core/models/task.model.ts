@@ -46,6 +46,20 @@ export interface NewTask {
   isMustDo: boolean;
 }
 
+const CATEGORY_EMOJI: Record<TaskCategory, string> = {
+  Health: '💪',
+  'Working Skills': '💼',
+  'Personal Skills': '📚',
+  Housework: '🧹',
+  Social: '👥',
+  'Self-Expression': '🎨'
+};
+
+/** Emoji shorthand for a task category, used in place of the text label in collapsed views. */
+export function categoryToEmoji(category: TaskCategory): string {
+  return CATEGORY_EMOJI[category];
+}
+
 /** URL-safe slug for a length value, used for routing + theming. */
 export function lengthToSlug(length: TaskLength): string {
   return length.toLowerCase().replace(/\s+/g, '-');

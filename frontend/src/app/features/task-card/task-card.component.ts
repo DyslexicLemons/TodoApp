@@ -1,6 +1,13 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TASK_CATEGORIES, Task, TaskCategory, TaskDetail, formatEstimatedTime } from '../../core/models/task.model';
+import {
+  TASK_CATEGORIES,
+  Task,
+  TaskCategory,
+  TaskDetail,
+  categoryToEmoji,
+  formatEstimatedTime
+} from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
 import { TaskRefreshService } from '../../core/services/task-refresh.service';
 
@@ -21,6 +28,7 @@ export class TaskCardComponent {
   @Output() completed = new EventEmitter<void>();
 
   formatEstimatedTime = formatEstimatedTime;
+  categoryToEmoji = categoryToEmoji;
   readonly categories = TASK_CATEGORIES;
 
   detail = signal<TaskDetail | null>(null);
