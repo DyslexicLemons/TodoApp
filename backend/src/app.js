@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const tasksRoutes = require("./routes/tasks.routes");
 const factsRoutes = require("./routes/facts.routes");
+const historyRoutes = require("./routes/history.routes");
 
 function createApp() {
   const app = express();
@@ -11,6 +12,7 @@ function createApp() {
 
   app.use("/api/tasks", tasksRoutes);
   app.use("/api/facts", factsRoutes);
+  app.use("/api/history", historyRoutes);
 
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
