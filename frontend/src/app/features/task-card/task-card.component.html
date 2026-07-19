@@ -55,7 +55,23 @@
                 · {{ progress.label }}
               }
             </p>
-            <button type="button" class="edit-btn" (click)="startEdit()">Edit</button>
+            <div class="detail-actions">
+              <button type="button" class="edit-btn" (click)="startEdit()">Edit</button>
+              @if (!confirmingDelete()) {
+                <button type="button" class="delete-btn" (click)="requestDelete()">Delete</button>
+              } @else {
+                <span class="delete-confirm">
+                  Delete this task?
+                  <button type="button" class="delete-confirm-btn" [disabled]="deleting()" (click)="confirmDelete()">
+                    {{ deleting() ? 'Deleting...' : 'Yes, delete' }}
+                  </button>
+                  <button type="button" class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+                </span>
+              }
+            </div>
+            @if (deleteError(); as error) {
+              <p class="delete-error">{{ error }}</p>
+            }
           } @else {
             <form class="edit-form" [formGroup]="editForm" (ngSubmit)="saveEdit()">
               <label>

@@ -47,6 +47,9 @@ export class TaskCardComponent {
   hovering = signal(false);
   editing = signal(false);
   savingEdit = signal(false);
+  confirmingDelete = signal(false);
+  deleting = signal(false);
+  deleteError = signal<string | null>(null);
   private closeTimeout?: ReturnType<typeof setTimeout>;
   private completeErrorTimeout?: ReturnType<typeof setTimeout>;
 
@@ -79,7 +82,7 @@ export class TaskCardComponent {
 
   onHoverEnd(): void {
     this.hovering.set(false);
-    if (this.editing()) return;
+    if (this.editing() || this.confirmingDelete()) return;
     this.maybeClose();
   }
 
@@ -169,6 +172,32 @@ export class TaskCardComponent {
         },
         error: () => this.savingEdit.set(false)
       });
+  }
+
+  requestDelete(): void {
+    this.deleteError.set(null);
+    this.confirmingDelete.set(true);
+  }
+
+  cancelDelete(): void {
+    this.confirmingDelete.set(false);
+    this.maybeClose();
+  }
+
+  confirmDelete(): void {
+    if (this.deleting()) return;
+    this.deleting.set(true);
+    this.deleteError.set(null);
+    this.taskService.deleteTask(this.task.id).subscribe({
+      next: () => {
+        this.deleting.set(false);
+        this.taskRefresh.notify();
+      },
+      error: () => {
+        this.deleting.set(false);
+        this.deleteError.set('Could not delete task - try again');
+      }
+    });
   }
 
   formattedDueDate(): string | null {
