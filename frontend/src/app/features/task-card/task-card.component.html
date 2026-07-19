@@ -1,14 +1,14 @@
 <article class="task-card" (mouseenter)="onHoverStart()" (mouseleave)="onHoverEnd()">
   <div class="task-card__row">
     <div class="task-card__main">
-      <h3 class="task-card__title">{{ task.title }}</h3>
+      <h3 class="task-card__title">
+        <span class="task-card__emoji" [title]="task.category">{{ categoryToEmoji(task.category) }}</span>
+        {{ task.title }}
+      </h3>
       <div class="task-card__meta">
-        <span class="badge badge--category" [title]="task.category">
-          {{ categoryToEmoji(task.category) }}
-          @if (isOpen()) {
-            {{ task.category }}
-          }
-        </span>
+        @if (isOpen()) {
+          <span class="badge badge--category" [title]="task.category">{{ task.category }}</span>
+        }
         @if (task.frequency !== 'Daily') {
           <span class="badge badge--frequency">{{ task.frequency }}</span>
         }

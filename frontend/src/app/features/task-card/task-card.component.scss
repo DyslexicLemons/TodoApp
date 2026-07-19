@@ -70,10 +70,17 @@
 }
 
 .task-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-family: var(--font-heading);
   font-size: 1.05rem;
   margin: 0 0 0.35rem;
   color: var(--color-text);
+}
+
+.task-card__emoji {
+  flex-shrink: 0;
 }
 
 .task-card__meta {
