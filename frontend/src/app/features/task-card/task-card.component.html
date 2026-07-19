@@ -13,6 +13,12 @@
         @if (showLength) {
           <span class="badge badge--length">{{ task.length }}</span>
         }
+        @if (task.frequency !== 'Daily') {
+          <span class="badge badge--frequency">{{ task.frequency }}</span>
+        }
+        @if (periodProgress; as progress) {
+          <app-frequency-pie [completed]="progress.completed" [target]="progress.target" [label]="progress.label" />
+        }
         @if (formattedDueDate(); as due) {
           <span class="badge badge--due">Due {{ due }}</span>
         }
@@ -38,6 +44,9 @@
             <p class="detail-stats">
               Completed {{ d.stats.totalCompletions }} time{{ d.stats.totalCompletions === 1 ? '' : 's' }} ·
               current streak {{ d.stats.currentStreak }}
+              @if (periodProgress; as progress) {
+                · {{ progress.label }}
+              }
             </p>
             <button type="button" class="edit-btn" (click)="startEdit()">Edit</button>
           } @else {
@@ -76,6 +85,22 @@
                   Est. minutes
                   <input type="number" formControlName="estimatedMins" min="0" max="59" step="5" />
                 </label>
+
+                <label>
+                  Frequency
+                  <select formControlName="frequency">
+                    @for (f of frequencies; track f) {
+                      <option [value]="f">{{ f }}</option>
+                    }
+                  </select>
+                </label>
+
+                @if (editForm.value.frequency === 'Weekly') {
+                  <label>
+                    Times per week
+                    <input type="number" formControlName="targetCount" min="1" step="1" />
+                  </label>
+                }
               </div>
 
               <label class="checkbox-row">

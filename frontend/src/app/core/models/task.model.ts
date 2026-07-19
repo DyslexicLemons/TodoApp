@@ -1,5 +1,6 @@
 export type TaskLength = 'Quick' | 'Small' | 'Medium' | 'Long-Term';
 export type TaskCategory = 'Health' | 'Working Skills' | 'Personal Skills' | 'Housework' | 'Social' | 'Self-Expression';
+export type TaskFrequency = 'Daily' | 'Weekly' | 'Monthly' | 'One-Time';
 
 export const TASK_LENGTHS: TaskLength[] = ['Quick', 'Small', 'Medium', 'Long-Term'];
 export const TASK_CATEGORIES: TaskCategory[] = [
@@ -10,6 +11,7 @@ export const TASK_CATEGORIES: TaskCategory[] = [
   'Social',
   'Self-Expression'
 ];
+export const TASK_FREQUENCIES: TaskFrequency[] = ['Daily', 'Weekly', 'Monthly', 'One-Time'];
 
 export interface Task {
   id: string;
@@ -20,6 +22,8 @@ export interface Task {
   length: TaskLength;
   category: TaskCategory;
   isMustDo: boolean;
+  frequency: TaskFrequency;
+  targetCount: number;
   currentStreak: number;
   completionHistory: string[];
   lastCompletedDate: string | null;
@@ -44,6 +48,8 @@ export interface NewTask {
   estimatedMinutes: number;
   category: TaskCategory;
   isMustDo: boolean;
+  frequency: TaskFrequency;
+  targetCount: number;
 }
 
 const CATEGORY_EMOJI: Record<TaskCategory, string> = {
@@ -75,4 +81,34 @@ export function formatEstimatedTime(minutes: number): string {
   if (minutes < 60) return `~${Math.round(minutes / 15) * 15} min`;
   const hours = Math.round((minutes / 60) * 2) / 2;
   return `~${hours} hour${hours === 1 ? '' : 's'}`;
+}
+
+/** Monday-based start of the week containing `date`, local time - mirrors backend dateUtil.js. */
+function startOfWeek(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay();
+  const diffToMonday = (day + 6) % 7;
+  d.setDate(d.getDate() - diffToMonday);
+  return d;
+}
+
+function startOfMonth(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(1);
+  return d;
+}
+
+/** How many of a task's completions fall within its current Weekly/Monthly period, for the progress pie. */
+export function completionsInCurrentPeriod(task: Task, now: Date = new Date()): number {
+  if (task.frequency === 'Weekly') {
+    const currentWeek = startOfWeek(now).getTime();
+    return task.completionHistory.filter((d) => startOfWeek(new Date(d)).getTime() === currentWeek).length;
+  }
+  if (task.frequency === 'Monthly') {
+    const currentMonth = startOfMonth(now).getTime();
+    return task.completionHistory.filter((d) => startOfMonth(new Date(d)).getTime() === currentMonth).length;
+  }
+  return task.completionHistory.length;
 }

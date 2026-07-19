@@ -36,6 +36,22 @@
         Due date
         <input type="date" formControlName="dueDate" />
       </label>
+
+      <label>
+        Frequency
+        <select formControlName="frequency">
+          @for (f of frequencies; track f) {
+            <option [value]="f">{{ f }}</option>
+          }
+        </select>
+      </label>
+
+      @if (form.value.frequency === 'Weekly') {
+        <label>
+          Times per week
+          <input type="number" formControlName="targetCount" min="1" step="1" />
+        </label>
+      }
     </div>
 
     <label class="checkbox-row">

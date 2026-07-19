@@ -2,19 +2,23 @@ import { Component, EventEmitter, Input, Output, inject, signal } from '@angular
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   TASK_CATEGORIES,
+  TASK_FREQUENCIES,
   Task,
   TaskCategory,
   TaskDetail,
+  TaskFrequency,
   categoryToEmoji,
+  completionsInCurrentPeriod,
   formatEstimatedTime
 } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
 import { TaskRefreshService } from '../../core/services/task-refresh.service';
+import { FrequencyPieComponent } from './frequency-pie.component';
 
 @Component({
   selector: 'app-task-card',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FrequencyPieComponent],
   templateUrl: './task-card.component.html',
   styleUrl: './task-card.component.scss'
 })
@@ -30,6 +34,7 @@ export class TaskCardComponent {
   formatEstimatedTime = formatEstimatedTime;
   categoryToEmoji = categoryToEmoji;
   readonly categories = TASK_CATEGORIES;
+  readonly frequencies = TASK_FREQUENCIES;
 
   detail = signal<TaskDetail | null>(null);
   loadingDetail = signal(false);
@@ -47,8 +52,18 @@ export class TaskCardComponent {
     category: ['Health' as TaskCategory, Validators.required],
     estimatedHours: [0, [Validators.required, Validators.min(0)]],
     estimatedMins: [0, [Validators.required, Validators.min(0), Validators.max(59)]],
-    isMustDo: [false]
+    isMustDo: [false],
+    frequency: ['Daily' as TaskFrequency, Validators.required],
+    targetCount: [1, [Validators.required, Validators.min(1)]]
   });
+
+  get periodProgress(): { completed: number; target: number; label: string } | null {
+    if (this.task.frequency !== 'Weekly' && this.task.frequency !== 'Monthly') return null;
+    const target = this.task.frequency === 'Monthly' ? 1 : this.task.targetCount;
+    const completedCount = completionsInCurrentPeriod(this.task);
+    const periodWord = this.task.frequency === 'Weekly' ? 'week' : 'month';
+    return { completed: completedCount, target, label: `${completedCount} of ${target} this ${periodWord}` };
+  }
 
   onHoverStart(): void {
     clearTimeout(this.closeTimeout);
@@ -103,7 +118,9 @@ export class TaskCardComponent {
       category: this.task.category,
       estimatedHours: Math.floor(this.task.estimatedMinutes / 60),
       estimatedMins: this.task.estimatedMinutes % 60,
-      isMustDo: this.task.isMustDo
+      isMustDo: this.task.isMustDo,
+      frequency: this.task.frequency,
+      targetCount: this.task.targetCount
     });
     this.editing.set(true);
   }
@@ -127,7 +144,9 @@ export class TaskCardComponent {
         dueDate: value.dueDate || null,
         category: value.category as TaskCategory,
         estimatedMinutes,
-        isMustDo: value.isMustDo
+        isMustDo: value.isMustDo,
+        frequency: value.frequency as TaskFrequency,
+        targetCount: value.frequency === 'Weekly' ? value.targetCount : 1
       })
       .subscribe({
         next: () => {

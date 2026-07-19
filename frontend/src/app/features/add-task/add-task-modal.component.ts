@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskService } from '../../core/services/task.service';
-import { TASK_CATEGORIES, TaskCategory } from '../../core/models/task.model';
+import { TASK_CATEGORIES, TASK_FREQUENCIES, TaskCategory, TaskFrequency } from '../../core/models/task.model';
 
 @Component({
   selector: 'app-add-task-modal',
@@ -18,6 +18,7 @@ export class AddTaskModalComponent {
   @Output() created = new EventEmitter<void>();
 
   readonly categories = TASK_CATEGORIES;
+  readonly frequencies = TASK_FREQUENCIES;
 
   submitting = signal(false);
 
@@ -28,7 +29,9 @@ export class AddTaskModalComponent {
     estimatedHours: [0, [Validators.required, Validators.min(0)]],
     estimatedMins: [30, [Validators.required, Validators.min(0), Validators.max(59)]],
     category: ['Health', Validators.required],
-    isMustDo: [false]
+    isMustDo: [false],
+    frequency: ['Daily' as TaskFrequency, Validators.required],
+    targetCount: [1, [Validators.required, Validators.min(1)]]
   });
 
   submit(): void {
@@ -45,7 +48,9 @@ export class AddTaskModalComponent {
         dueDate: value.dueDate || null,
         estimatedMinutes,
         category: value.category as TaskCategory,
-        isMustDo: value.isMustDo
+        isMustDo: value.isMustDo,
+        frequency: value.frequency as TaskFrequency,
+        targetCount: value.frequency === 'Weekly' ? value.targetCount : 1
       })
       .subscribe({
         next: () => {
