@@ -1,0 +1,6 @@
+<div class="accomplishment-popup">
+  <p class="popup-title">{{ task.title }}</p>
+  <p class="popup-stat">Completed {{ task.completionHistory.length }} time{{ task.completionHistory.length === 1 ? '' : 's' }}</p>
+  <p class="popup-stat">Current streak: {{ task.currentStreak }} day{{ task.currentStreak === 1 ? '' : 's' }}</p>
+  <p class="popup-encouragement">{{ encouragement() }}</p>
+</div>

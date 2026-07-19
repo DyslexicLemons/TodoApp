@@ -1,0 +1,57 @@
+.completed-panel {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 280px;
+  max-height: 40vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: var(--border-width, 1px) solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  z-index: 20;
+}
+
+.panel-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  margin: 0 0 0.6rem;
+  color: var(--color-accent);
+}
+
+.empty-state {
+  font-size: 0.82rem;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.completed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.completed-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: calc(var(--radius) / 2);
+  cursor: default;
+
+  &:hover {
+    background: var(--color-bg);
+  }
+}
+
+.completed-title {
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

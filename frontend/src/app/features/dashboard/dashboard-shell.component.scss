@@ -1,0 +1,63 @@
+.shell-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-surface);
+  border-bottom: var(--border-width, 1px) solid var(--color-border);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab-link {
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text);
+  opacity: 0.65;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &--active {
+    opacity: 1;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    box-shadow: var(--shadow);
+  }
+}
+
+.add-task-btn {
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.shell-main {
+  min-height: calc(100vh - 74px);
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: background 0.3s ease, color 0.3s ease;
+  padding: 1.5rem;
+  position: relative;
+}

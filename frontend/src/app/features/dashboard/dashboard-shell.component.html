@@ -1,0 +1,16 @@
+<header class="shell-header">
+  <nav class="tab-nav">
+    @for (tab of tabs; track tab.path) {
+      <a class="tab-link" [routerLink]="tab.path" routerLinkActive="tab-link--active">{{ tab.label }}</a>
+    }
+  </nav>
+  <button class="add-task-btn" type="button" (click)="openAddTask()">+ Add Task</button>
+</header>
+
+<main class="shell-main">
+  <router-outlet></router-outlet>
+</main>
+
+@if (isAddTaskOpen()) {
+  <app-add-task-modal (close)="closeAddTask()" (created)="onTaskCreated()"></app-add-task-modal>
+}

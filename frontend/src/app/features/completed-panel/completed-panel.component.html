@@ -1,0 +1,24 @@
+<aside class="completed-panel">
+  <h2 class="panel-title">Completed Today</h2>
+
+  @if (completedTasks().length === 0) {
+    <p class="empty-state">Nothing completed yet today.</p>
+  }
+
+  <ul class="completed-list">
+    @for (task of completedTasks(); track task.id) {
+      <li
+        class="completed-item"
+        (mouseenter)="hoveredTaskId.set(task.id)"
+        (mouseleave)="hoveredTaskId.set(null)"
+      >
+        <app-streak-flame-icon [streak]="task.currentStreak"></app-streak-flame-icon>
+        <span class="completed-title">{{ task.title }}</span>
+
+        @if (hoveredTaskId() === task.id) {
+          <app-accomplishment-popup [task]="task"></app-accomplishment-popup>
+        }
+      </li>
+    }
+  </ul>
+</aside>

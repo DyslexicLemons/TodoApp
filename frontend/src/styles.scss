@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body, 'Nunito', system-ui, sans-serif);
+}
+
+:root {
+  --font-body: 'Nunito', system-ui, sans-serif;
+  --color-on-accent: #ffffff;
+}
+
+/* Home: neutral overview, calm and welcoming */
+[data-theme='home'] {
+  --color-bg: #f6f5fb;
+  --color-surface: #ffffff;
+  --color-text: #2c2a3a;
+  --color-border: #e0dcf0;
+  --color-accent: #7c6ff0;
+  --color-on-accent: #ffffff;
+  --font-heading: 'Nunito', system-ui, sans-serif;
+  --radius: 14px;
+  --border-width: 1px;
+  --shadow: 0 1px 6px rgba(90, 70, 180, 0.1);
+}
+
+/* Quick: relaxed, minimal, pressure-free */
+[data-theme='quick'] {
+  --color-bg: #fdfaf5;
+  --color-surface: #ffffff;
+  --color-text: #3a3a3a;
+  --color-border: #ecdfc8;
+  --color-accent: #8fd6a8;
+  --color-on-accent: #1f3d2b;
+  --font-heading: 'Nunito', system-ui, sans-serif;
+  --radius: 18px;
+  --border-width: 1px;
+  --shadow: none;
+}
+
+/* Small: clean, light, still simple */
+[data-theme='small'] {
+  --color-bg: #f5f8fb;
+  --color-surface: #ffffff;
+  --color-text: #263140;
+  --color-border: #d7e3ef;
+  --color-accent: #6aa9e0;
+  --color-on-accent: #ffffff;
+  --font-heading: 'Nunito', system-ui, sans-serif;
+  --radius: 12px;
+  --border-width: 1px;
+  --shadow: 0 1px 4px rgba(30, 60, 90, 0.08);
+}
+
+/* Medium: more focused and energetic */
+[data-theme='medium'] {
+  --color-bg: #fff6e8;
+  --color-surface: #fffaf1;
+  --color-text: #3a2a12;
+  --color-border: #f0cf9a;
+  --color-accent: #e08a2b;
+  --color-on-accent: #ffffff;
+  --font-heading: 'Rubik', system-ui, sans-serif;
+  --radius: 8px;
+  --border-width: 1px;
+  --shadow: 0 2px 10px rgba(224, 138, 43, 0.2);
+}
+
+/* Long-Term: hardcore, high-stakes, cyberpunk-leaning */
+[data-theme='long-term'] {
+  --color-bg: #0c0c10;
+  --color-surface: #17161f;
+  --color-text: #eef0ff;
+  --color-border: #3a3550;
+  --color-accent: #ff2e63;
+  --color-on-accent: #0c0c10;
+  --font-heading: 'Orbitron', 'Rubik', system-ui, sans-serif;
+  --radius: 3px;
+  --border-width: 1px;
+  --shadow: 0 0 16px rgba(255, 46, 99, 0.55);
+}

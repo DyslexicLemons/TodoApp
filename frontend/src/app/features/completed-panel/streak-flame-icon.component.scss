@@ -1,0 +1,24 @@
+.flame-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flame-icon--small svg {
+  filter: drop-shadow(0 0 2px rgba(255, 122, 26, 0.5));
+}
+
+.flame-icon--big svg {
+  animation: flicker 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgba(255, 90, 31, 0.7));
+}
+
+.flame-icon--volcano svg {
+  animation: flicker 1.1s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 122, 26, 0.85));
+}
+
+@keyframes flicker {
+  0%, 100% { transform: scale(1) translateY(0); opacity: 1; }
+  50% { transform: scale(1.08) translateY(-1px); opacity: 0.9; }
+}

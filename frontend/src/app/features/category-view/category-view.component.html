@@ -1,0 +1,20 @@
+<div class="category-view">
+  <div class="lists-column">
+    @if (categoryTasks().mustDo.length > 0) {
+      <section class="must-do-section">
+        <h2 class="section-title">MUST Do</h2>
+        <app-task-list [tasks]="categoryTasks().mustDo" (completed)="onTaskCompleted()"></app-task-list>
+      </section>
+    }
+
+    <section class="optional-section">
+      <h2 class="section-title">Optional</h2>
+      @if (!loading() && categoryTasks().optional.length === 0 && categoryTasks().mustDo.length === 0) {
+        <p class="empty-state">No {{ length }} tasks yet. Add one to get started.</p>
+      }
+      <app-task-list [tasks]="categoryTasks().optional" (completed)="onTaskCompleted()"></app-task-list>
+    </section>
+  </div>
+
+  <app-completed-panel></app-completed-panel>
+</div>

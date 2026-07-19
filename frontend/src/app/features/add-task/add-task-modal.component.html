@@ -1,0 +1,61 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <form class="modal" [formGroup]="form" (click)="$event.stopPropagation()" (ngSubmit)="submit()">
+    <h2>Add Task</h2>
+
+    <label>
+      Title
+      <input type="text" formControlName="title" autocomplete="off" />
+    </label>
+
+    <label>
+      Description
+      <textarea formControlName="description" rows="2"></textarea>
+    </label>
+
+    <div class="grid">
+      <label>
+        Difficulty
+        <select formControlName="difficulty">
+          @for (d of difficulties; track d) {
+            <option [value]="d">{{ d }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Length
+        <select formControlName="length">
+          @for (l of lengths; track l) {
+            <option [value]="l">{{ l }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Category
+        <select formControlName="category">
+          @for (c of categories; track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Due date
+        <input type="date" formControlName="dueDate" />
+      </label>
+    </div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" formControlName="isMustDo" />
+      Must Do
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="close.emit()">Cancel</button>
+      <button type="submit" class="btn-primary" [disabled]="form.invalid || submitting()">
+        {{ submitting() ? 'Adding...' : 'Add Task' }}
+      </button>
+    </div>
+  </form>
+</div>
