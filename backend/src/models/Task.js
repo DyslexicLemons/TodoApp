@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
+const { LENGTHS, lengthForMinutes } = require("../services/taskTimeService");
 
-const DIFFICULTIES = ["Easy", "Medium", "Hard"];
-const LENGTHS = ["Quick", "Small", "Medium", "Long-Term"];
 const CATEGORIES = ["Health", "Working Skills", "Personal Skills", "Housework", "Social", "Self-Expression"];
 
 const taskSchema = new mongoose.Schema(
@@ -9,8 +8,7 @@ const taskSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
     dueDate: { type: Date, default: null },
-    difficulty: { type: String, enum: DIFFICULTIES, required: true },
-    length: { type: String, enum: LENGTHS, required: true },
+    estimatedMinutes: { type: Number, required: true, min: 1 },
     category: { type: String, enum: CATEGORIES, required: true },
     isMustDo: { type: Boolean, required: true, default: false },
     currentStreak: { type: Number, default: 0 },
@@ -19,6 +17,10 @@ const taskSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+taskSchema.virtual("length").get(function () {
+  return lengthForMinutes(this.estimatedMinutes);
+});
 
 taskSchema.set("toJSON", {
   virtuals: true,
@@ -31,4 +33,4 @@ taskSchema.set("toJSON", {
 
 const Task = mongoose.model("Task", taskSchema);
 
-module.exports = { Task, DIFFICULTIES, LENGTHS, CATEGORIES };
+module.exports = { Task, LENGTHS, CATEGORIES };

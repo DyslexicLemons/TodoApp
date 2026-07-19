@@ -6,13 +6,15 @@ async function getRandomFact() {
 }
 
 const EASIER_TIPS = {
-  Easy: "Just start - this one is small enough to finish in one sitting.",
-  Medium: "Break it into 2-3 sub-steps and knock out the first one now.",
-  Hard: "Commit to just 10 minutes on it. Momentum does the rest.",
+  short: "Just start - this one is small enough to finish in one sitting.",
+  medium: "Break it into 2-3 sub-steps and knock out the first one now.",
+  long: "Commit to just 10 minutes on it. Momentum does the rest.",
 };
 
-function getEasierTip(difficulty) {
-  return EASIER_TIPS[difficulty] || EASIER_TIPS.Medium;
+function getEasierTip(minutes) {
+  if (minutes <= 30) return EASIER_TIPS.short;
+  if (minutes <= 120) return EASIER_TIPS.medium;
+  return EASIER_TIPS.long;
 }
 
 module.exports = { getRandomFact, getEasierTip };

@@ -1,4 +1,3 @@
-const DIFFICULTY_RANK = { Easy: 0, Medium: 1, Hard: 2 };
 const NO_DUE_DATE_SENTINEL = Infinity;
 
 function dueDateValue(task) {
@@ -6,13 +5,13 @@ function dueDateValue(task) {
 }
 
 /**
- * Orders optional (non-must-do) tasks: easiest difficulty first, then most
+ * Orders optional (non-must-do) tasks: shortest estimated time first, then most
  * historically completed (habitual = easier), then soonest due date (no
  * due date sorts last).
  */
 function compareOptionalTasks(a, b) {
-  const difficultyDelta = DIFFICULTY_RANK[a.difficulty] - DIFFICULTY_RANK[b.difficulty];
-  if (difficultyDelta !== 0) return difficultyDelta;
+  const minutesDelta = a.estimatedMinutes - b.estimatedMinutes;
+  if (minutesDelta !== 0) return minutesDelta;
 
   const historyDelta = (b.completionHistory?.length || 0) - (a.completionHistory?.length || 0);
   if (historyDelta !== 0) return historyDelta;

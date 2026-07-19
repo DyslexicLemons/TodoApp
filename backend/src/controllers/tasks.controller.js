@@ -1,4 +1,5 @@
 const { Task, LENGTHS } = require("../models/Task");
+const { minutesRangeForLength } = require("../services/taskTimeService");
 const { sortTasksForCategory } = require("../services/taskSortService");
 const { applyCompletion, AlreadyCompletedTodayError } = require("../services/streakService");
 const { getRandomFact, getEasierTip } = require("../services/factService");
@@ -10,7 +11,9 @@ async function listByLength(req, res) {
     return res.status(400).json({ error: `length must be one of: ${LENGTHS.join(", ")}` });
   }
 
-  const tasks = await Task.find({ length });
+  const { min, max } = minutesRangeForLength(length);
+  const estimatedMinutes = max === Infinity ? { $gt: min } : { $gt: min, $lte: max };
+  const tasks = await Task.find({ estimatedMinutes });
   const activeTasks = tasks.filter(
     (t) => !t.lastCompletedDate || !isSameDay(t.lastCompletedDate, new Date())
   );
@@ -55,7 +58,7 @@ async function getTaskDetail(req, res) {
       currentStreak: task.currentStreak,
     },
     fact: fact ? fact.text : null,
-    easierTip: getEasierTip(task.difficulty),
+    easierTip: getEasierTip(task.estimatedMinutes),
   });
 }
 
