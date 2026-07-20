@@ -8,7 +8,7 @@ const {
   AlreadyCompletedError,
   NothingToUndoError,
 } = require("../services/streakService");
-const { getRandomFact, getEasierTip } = require("../services/factService");
+const { getRandomFact, getTaskGoal, getTaskWhy } = require("../services/factService");
 const { isSameDay } = require("../services/dateUtil");
 const { isDoneForCurrentPeriod } = require("../services/frequencyService");
 
@@ -61,7 +61,8 @@ async function getTaskDetail(req, res) {
       currentStreak: task.currentStreak,
     },
     fact: fact ? fact.text : null,
-    easierTip: getEasierTip(task.estimatedMinutes),
+    goal: getTaskGoal(task.category),
+    why: getTaskWhy(task.category),
   });
 }
 

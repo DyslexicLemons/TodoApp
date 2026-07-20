@@ -40,7 +40,8 @@ export interface TaskDetail {
   task: Task;
   stats: { totalCompletions: number; currentStreak: number };
   fact: string | null;
-  easierTip: string;
+  goal: string;
+  why: string;
 }
 
 export interface NewTask {

@@ -32,10 +32,11 @@
       @if (detail(); as d) {
         <div class="task-card__detail">
           @if (!editing()) {
+            <p class="detail-goal"><strong>Goal:</strong> {{ d.goal }}</p>
             @if (d.task.description) {
               <p class="detail-description">{{ d.task.description }}</p>
             }
-            <p class="detail-tip"><strong>Make it easier:</strong> {{ d.easierTip }}</p>
+            <p class="detail-why"><strong>Why:</strong> {{ d.why }}</p>
             @if (d.fact) {
               <p class="detail-fact">💡 {{ d.fact }}</p>
             }
