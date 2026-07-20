@@ -1,6 +1,16 @@
 <div class="settings-view">
   <section class="schedule-section">
-    <h2 class="section-title">Work Schedule</h2>
+    <h2 class="section-title">Timezone</h2>
+    <p class="section-hint">
+      Every time in this app - work/sleep hours, streaks, due dates - is interpreted in this timezone.
+    </p>
+    <select class="timezone-select" [formControl]="timezoneControl">
+      @for (tz of timezoneOptions; track tz) {
+        <option [value]="tz">{{ tz }}</option>
+      }
+    </select>
+
+    <h2 class="section-title schedule-section__work-title">Work Schedule</h2>
     <p class="section-hint">
       Hours here are treated as busy when the Planner builds your weekly schedule. Toggle a day off to leave
       it fully free.

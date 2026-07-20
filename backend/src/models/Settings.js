@@ -24,6 +24,10 @@ const settingsSchema = new mongoose.Schema(
     workSchedule: { type: [daySchema], default: () => Array.from({ length: 7 }, () => ({})) },
     // Same every day, unlike workSchedule - end < start means it wraps past midnight
     sleepSchedule: { type: sleepScheduleSchema, default: () => ({}) },
+    // IANA name (e.g. "America/New_York"). All work/sleep-schedule HH:MM strings, and every other
+    // date computation in the app (streaks, due dates, the planner's day boundaries), are
+    // interpreted in this timezone - see seedSettings.js, which applies it to process.env.TZ.
+    timezone: { type: String, default: () => process.env.TZ || "UTC" },
   },
   { timestamps: true }
 );

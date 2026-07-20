@@ -14,6 +14,9 @@ export interface SleepSchedule {
 export interface AppSettings {
   workSchedule: DaySchedule[];
   sleepSchedule: SleepSchedule;
+  /** IANA name (e.g. "America/New_York"). All schedule times, and every other date computation
+   *  in the app, are interpreted in this timezone. */
+  timezone: string;
 }
 
 export interface CalendarStatus {

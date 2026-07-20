@@ -12,8 +12,8 @@ export class SettingsService {
     return this.http.get<AppSettings>(`${API_BASE_URL}/settings`);
   }
 
-  updateSettings(workSchedule: DaySchedule[], sleepSchedule: SleepSchedule): Observable<AppSettings> {
-    return this.http.put<AppSettings>(`${API_BASE_URL}/settings`, { workSchedule, sleepSchedule });
+  updateSettings(workSchedule: DaySchedule[], sleepSchedule: SleepSchedule, timezone: string): Observable<AppSettings> {
+    return this.http.put<AppSettings>(`${API_BASE_URL}/settings`, { workSchedule, sleepSchedule, timezone });
   }
 
   getCalendarStatus(): Observable<CalendarStatus> {
