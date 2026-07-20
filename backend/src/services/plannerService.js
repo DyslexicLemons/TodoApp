@@ -282,6 +282,7 @@ function buildWeekPlan({ tasks, workSchedule, sleepSchedule, calendarBusy = [], 
     days.push({
       date: date.toISOString(),
       isPast: date.getTime() < startOfDay(now).getTime(),
+      isToday: date.getTime() === startOfDay(now).getTime(),
       noCapacity: windows.length === 0,
       freeMinutes: Math.round(freeMinutes),
     });

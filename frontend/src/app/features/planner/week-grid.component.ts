@@ -14,13 +14,33 @@ interface DayColumn {
   dateLabel: string;
   isPast: boolean;
   noCapacity: boolean;
+  timeLeftLabel: string | null;
   items: DayColumnItem[];
 }
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-function formatTime(iso: string): string {
+// Within this window of the actual current time, a scheduled start reads as "Now" rather than
+// a clock time - the backend schedules today's first item starting at the moment the plan was
+// built, and showing that back as e.g. "3:47 PM" reads as an arbitrary time rather than "right now".
+const NOW_TOLERANCE_MS = 2 * 60 * 1000;
+
+function formatClockTime(iso: string): string {
   return new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+}
+
+function formatStartTime(iso: string): string {
+  const delta = new Date(iso).getTime() - Date.now();
+  if (delta >= -NOW_TOLERANCE_MS && delta <= NOW_TOLERANCE_MS) return 'Now';
+  return formatClockTime(iso);
+}
+
+function formatTimeLeft(freeMinutes: number): string {
+  const hours = Math.floor(freeMinutes / 60);
+  const minutes = freeMinutes % 60;
+  if (hours === 0) return `${minutes}m left`;
+  if (minutes === 0) return `${hours}h left`;
+  return `${hours}h ${minutes}m left`;
 }
 
 @Component({
@@ -45,6 +65,7 @@ export class WeekGridComponent {
       }),
       isPast: day.isPast,
       noCapacity: day.noCapacity,
+      timeLeftLabel: day.isToday && !day.noCapacity ? formatTimeLeft(day.freeMinutes) : null,
       items: plan.scheduled
         .filter((s) => s.day === index)
         .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
@@ -53,7 +74,7 @@ export class WeekGridComponent {
           title: s.title,
           category: s.category,
           isMustDo: s.isMustDo,
-          timeLabel: `${formatTime(s.start)} - ${formatTime(s.end)}`
+          timeLabel: `${formatStartTime(s.start)} - ${formatClockTime(s.end)}`
         }))
     }));
   });

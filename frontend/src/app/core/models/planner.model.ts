@@ -1,6 +1,7 @@
 export interface DayInfo {
   date: string;
   isPast: boolean;
+  isToday: boolean;
   noCapacity: boolean;
   freeMinutes: number;
 }

@@ -39,6 +39,12 @@
   opacity: 0.6;
 }
 
+.day-column__time-left {
+  font-size: 0.7rem;
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 .day-column__empty {
   font-size: 0.8rem;
   opacity: 0.55;
@@ -65,8 +71,16 @@
   gap: 0.15rem;
 }
 
-.task-block--must-do {
-  box-shadow: 0 0 0 1px var(--color-accent) inset;
+.task-block__badge {
+  align-self: flex-start;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-bg);
+  background: var(--color-accent);
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
 }
 
 .task-block__time {
