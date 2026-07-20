@@ -151,12 +151,17 @@ export class TaskCardComponent {
    * the Completed Today panel updates in step with the animation instead of jumping
    * ahead of it while the backend request has already resolved.
    *
+   * The card is pinned to `position: fixed` at its current on-screen spot before the
+   * shrink starts, which pulls it out of the list's flex flow immediately - sibling
+   * tasks shift up on the next frame rather than waiting on the (slower) shrink/fly
+   * transition to finish.
+   *
    * Only one flight plays at a time app-wide (see TaskCompletionAnimationService). If
    * another task is completed before this one lands, this flight is force-finished
    * (skipped) immediately: its ghost is torn down without ever emitting `completed`,
    * so the Completed Today panel doesn't update this task's row until some other
    * completion lands and refreshes everything - it never shows a task before its own
-   * animation caught up. The card itself keeps collapsing via its own CSS transition
+   * animation caught up. The card itself keeps shrinking via its own CSS transition
    * regardless, since `leaving` was already set.
    */
   private playLeaveAnimation(origin: HTMLElement): void {
@@ -165,6 +170,12 @@ export class TaskCardComponent {
     const targetRect = this.completionAnimation.getTargetRect();
     const targetX = targetRect ? targetRect.left + targetRect.width / 2 : window.innerWidth - 150;
     const targetY = targetRect ? targetRect.top + targetRect.height / 2 : window.innerHeight - 30;
+
+    hostEl.style.position = 'fixed';
+    hostEl.style.top = `${cardRect.top}px`;
+    hostEl.style.left = `${cardRect.left}px`;
+    hostEl.style.width = `${cardRect.width}px`;
+    hostEl.style.margin = '0';
 
     hostEl.style.setProperty('--leave-dx', `${targetX - (cardRect.left + cardRect.width / 2)}px`);
     hostEl.style.setProperty('--leave-dy', `${targetY - (cardRect.top + cardRect.height / 2)}px`);
