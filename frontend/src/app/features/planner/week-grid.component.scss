@@ -93,3 +93,7 @@
   color: var(--color-text);
   font-weight: 600;
 }
+
+.task-block__emoji {
+  flex-shrink: 0;
+}

@@ -21,7 +21,10 @@
                 <span class="task-block__badge">Must-do</span>
               }
               <span class="task-block__time">{{ item.timeLabel }}</span>
-              <span class="task-block__title">{{ item.title }}</span>
+              <span class="task-block__title">
+                <span class="task-block__emoji" [title]="item.category">{{ item.categoryEmoji }}</span>
+                {{ item.title }}
+              </span>
             </li>
           }
         </ul>

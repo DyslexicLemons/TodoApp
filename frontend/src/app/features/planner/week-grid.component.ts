@@ -1,10 +1,12 @@
 import { Component, computed, input } from '@angular/core';
 import { WeekPlan } from '../../core/models/planner.model';
+import { categoryToEmoji, TaskCategory } from '../../core/models/task.model';
 
 interface DayColumnItem {
   taskId: string;
   title: string;
   category: string;
+  categoryEmoji: string;
   isMustDo: boolean;
   timeLabel: string;
 }
@@ -73,6 +75,7 @@ export class WeekGridComponent {
           taskId: s.taskId,
           title: s.title,
           category: s.category,
+          categoryEmoji: categoryToEmoji(s.category as TaskCategory),
           isMustDo: s.isMustDo,
           timeLabel: `${formatStartTime(s.start)} - ${formatClockTime(s.end)}`
         }))
