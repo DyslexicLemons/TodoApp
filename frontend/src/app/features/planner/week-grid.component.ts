@@ -7,7 +7,6 @@ interface DayColumnItem {
   title: string;
   category: string;
   categoryEmoji: string;
-  isMustDo: boolean;
   timeLabel: string;
 }
 
@@ -76,7 +75,6 @@ export class WeekGridComponent {
           title: s.title,
           category: s.category,
           categoryEmoji: categoryToEmoji(s.category as TaskCategory),
-          isMustDo: s.isMustDo,
           timeLabel: `${formatStartTime(s.start)} - ${formatClockTime(s.end)}`
         }))
     }));

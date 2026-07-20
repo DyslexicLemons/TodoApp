@@ -17,9 +17,6 @@
         <ul class="day-column__items">
           @for (item of column.items; track item.taskId + item.timeLabel) {
             <li class="task-block">
-              @if (item.isMustDo) {
-                <span class="task-block__badge">Must-do</span>
-              }
               <span class="task-block__time">{{ item.timeLabel }}</span>
               <span class="task-block__title">
                 <span class="task-block__emoji" [title]="item.category">{{ item.categoryEmoji }}</span>
