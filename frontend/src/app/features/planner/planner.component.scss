@@ -7,11 +7,33 @@
   padding-bottom: 3rem;
 }
 
+.planner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .section-title {
   font-family: var(--font-heading);
   color: var(--color-accent);
   letter-spacing: 0.02em;
   margin: 0;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: var(--border-width, 1px) solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
 }
 
 .section-subtitle {

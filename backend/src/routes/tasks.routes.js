@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get("/completed", asyncHandler(controller.listCompleted));
 router.get("/suggestions", asyncHandler(controller.listSuggestions));
+router.get("/last-modified", asyncHandler(controller.getLastModified));
 router.get("/", asyncHandler(controller.listByLength));
 router.post("/", asyncHandler(controller.createTask));
 router.get("/:id", asyncHandler(controller.getTaskDetail));

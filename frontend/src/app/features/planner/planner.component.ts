@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 import { PlannerService } from '../../core/services/planner.service';
+import { TaskService } from '../../core/services/task.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { TaskRefreshService } from '../../core/services/task-refresh.service';
 import { WeekPlan } from '../../core/models/planner.model';
@@ -21,6 +22,7 @@ const AUTO_REFRESH_MS = 60 * 1000;
 })
 export class PlannerComponent implements OnInit, OnDestroy {
   private plannerService = inject(PlannerService);
+  private taskService = inject(TaskService);
   private themeService = inject(ThemeService);
   private taskRefresh = inject(TaskRefreshService);
   private refreshSub?: Subscription;
@@ -28,6 +30,8 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
   plan = signal<WeekPlan | null>(null);
   loading = signal(true);
+  recalculating = signal(false);
+  private lastRecalculatedAt: Date | null = null;
 
   ngOnInit(): void {
     this.themeService.setTheme('planner');
@@ -46,6 +50,27 @@ export class PlannerComponent implements OnInit, OnDestroy {
     this.plannerService.getWeekPlan().subscribe((plan) => {
       this.plan.set(plan);
       this.loading.set(false);
+      this.lastRecalculatedAt = new Date();
+    });
+  }
+
+  /** Manual recalculation entry point: confirms with the user before rebuilding the plan, and uses
+   *  a stronger warning if nothing has actually changed since the last recalculation (initial load,
+   *  poll, or another view's edit/create) so the ask isn't a silent no-op. */
+  recalculate(): void {
+    this.recalculating.set(true);
+    this.taskService.getLastModified().subscribe(({ lastModified }) => {
+      this.recalculating.set(false);
+      const lastChange = lastModified ? new Date(lastModified) : null;
+      const hasChangesSinceLastRecalc = !!lastChange && (!this.lastRecalculatedAt || lastChange > this.lastRecalculatedAt);
+
+      const message = hasChangesSinceLastRecalc
+        ? "Recalculate this week's plan to include your recent task changes?"
+        : "No tasks have been added or edited since your last recalculation, so the plan will come out the same. Recalculate anyway?";
+
+      if (window.confirm(message)) {
+        this.load();
+      }
     });
   }
 }

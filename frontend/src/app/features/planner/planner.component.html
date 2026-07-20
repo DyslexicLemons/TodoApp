@@ -1,5 +1,15 @@
 <div class="planner-view">
-  <h2 class="section-title">This Week's Plan</h2>
+  <div class="planner-header">
+    <h2 class="section-title">This Week's Plan</h2>
+    <button
+      type="button"
+      class="btn-secondary"
+      [disabled]="recalculating()"
+      (click)="recalculate()"
+    >
+      {{ recalculating() ? 'Checking...' : 'Recalculate' }}
+    </button>
+  </div>
 
   @if (plan(); as p) {
     <app-week-grid [plan]="p"></app-week-grid>

@@ -16,6 +16,10 @@ export class TaskService {
     return this.http.get<CategoryTasks>(`${API_BASE_URL}/tasks/suggestions`);
   }
 
+  getLastModified(): Observable<{ lastModified: string | null }> {
+    return this.http.get<{ lastModified: string | null }>(`${API_BASE_URL}/tasks/last-modified`);
+  }
+
   getCompletedTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${API_BASE_URL}/tasks/completed`);
   }

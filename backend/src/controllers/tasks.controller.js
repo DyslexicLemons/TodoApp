@@ -35,6 +35,11 @@ async function listSuggestions(req, res) {
   res.json({ mustDo, optional: optional.slice(0, 5) });
 }
 
+async function getLastModified(req, res) {
+  const latest = await Task.findOne({}).sort({ updatedAt: -1 }).select("updatedAt").lean();
+  res.json({ lastModified: latest ? latest.updatedAt : null });
+}
+
 async function listCompleted(req, res) {
   const tasks = await Task.find({ lastCompletedDate: { $ne: null } });
   const completedToday = tasks
@@ -122,6 +127,7 @@ async function deleteTask(req, res) {
 module.exports = {
   listByLength,
   listSuggestions,
+  getLastModified,
   listCompleted,
   createTask,
   getTaskDetail,
