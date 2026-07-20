@@ -241,7 +241,7 @@
   cursor: pointer;
   letter-spacing: 0.02em;
   outline: 2px solid transparent;
-  outline-offset: 1px;
+  outline-offset: -2px;
   transition: outline-color 0.15s ease, filter 0.15s ease;
 
   &:hover:not(:disabled) {
