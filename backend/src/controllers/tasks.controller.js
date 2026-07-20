@@ -62,7 +62,7 @@ async function getTaskDetail(req, res) {
     },
     fact: fact ? fact.text : null,
     goal: getTaskGoal(task.category),
-    why: getTaskWhy(task.category),
+    why: task.why || getTaskWhy(task.category),
   });
 }
 

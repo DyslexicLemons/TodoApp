@@ -7,6 +7,7 @@ const taskSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
+    why: { type: String, default: "" },
     dueDate: { type: Date, default: null },
     estimatedMinutes: { type: Number, required: true, min: 1 },
     category: { type: String, enum: CATEGORIES, required: true },

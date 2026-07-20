@@ -63,6 +63,7 @@ export class TaskCardComponent {
   editForm = this.fb.nonNullable.group({
     title: ['', Validators.required],
     description: [''],
+    why: [''],
     dueDate: [''],
     category: ['Health' as TaskCategory, Validators.required],
     estimatedHours: [0, [Validators.required, Validators.min(0)]],
@@ -214,6 +215,7 @@ export class TaskCardComponent {
     this.editForm.reset({
       title: this.task.title,
       description: this.task.description,
+      why: this.task.why,
       dueDate: this.formattedDueDateForInput(),
       category: this.task.category,
       estimatedHours: Math.floor(this.task.estimatedMinutes / 60),
@@ -241,6 +243,7 @@ export class TaskCardComponent {
       .updateTask(this.task.id, {
         title: value.title,
         description: value.description,
+        why: value.why,
         dueDate: value.dueDate || null,
         category: value.category as TaskCategory,
         estimatedMinutes,

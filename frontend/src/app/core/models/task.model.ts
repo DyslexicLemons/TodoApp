@@ -19,6 +19,7 @@ export interface Task {
   id: string;
   title: string;
   description: string;
+  why: string;
   dueDate: string | null;
   estimatedMinutes: number;
   length: TaskLength;
@@ -47,6 +48,7 @@ export interface TaskDetail {
 export interface NewTask {
   title: string;
   description?: string;
+  why?: string;
   dueDate?: string | null;
   estimatedMinutes: number;
   category: TaskCategory;

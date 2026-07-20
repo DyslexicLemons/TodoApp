@@ -25,6 +25,7 @@ export class AddTaskModalComponent {
   form = this.fb.nonNullable.group({
     title: ['', Validators.required],
     description: [''],
+    why: [''],
     dueDate: [''],
     estimatedHours: [0, [Validators.required, Validators.min(0)]],
     estimatedMins: [30, [Validators.required, Validators.min(0), Validators.max(59)]],
@@ -45,6 +46,7 @@ export class AddTaskModalComponent {
       .createTask({
         title: value.title,
         description: value.description,
+        why: value.why,
         dueDate: value.dueDate || null,
         estimatedMinutes,
         category: value.category as TaskCategory,
