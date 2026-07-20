@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Task } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
 import { TaskRefreshService } from '../../core/services/task-refresh.service';
+import { TaskCompletionAnimationService } from '../../core/services/task-completion-animation.service';
 import { StreakFlameIconComponent } from './streak-flame-icon.component';
 import { AccomplishmentPopupComponent } from './accomplishment-popup.component';
 
@@ -13,10 +14,13 @@ import { AccomplishmentPopupComponent } from './accomplishment-popup.component';
   templateUrl: './completed-panel.component.html',
   styleUrl: './completed-panel.component.scss'
 })
-export class CompletedPanelComponent implements OnInit, OnDestroy {
+export class CompletedPanelComponent implements OnInit, AfterViewInit, OnDestroy {
   private taskService = inject(TaskService);
   private taskRefresh = inject(TaskRefreshService);
+  private completionAnimation = inject(TaskCompletionAnimationService);
   private refreshSub?: Subscription;
+
+  @ViewChild('panel', { static: true }) private panelRef!: ElementRef<HTMLElement>;
 
   completedTasks = signal<Task[]>([]);
   hoveredTaskId = signal<string | null>(null);
@@ -41,8 +45,13 @@ export class CompletedPanelComponent implements OnInit, OnDestroy {
     this.refreshSub = this.taskRefresh.onChange.subscribe(() => this.load());
   }
 
+  ngAfterViewInit(): void {
+    this.completionAnimation.registerTarget(this.panelRef.nativeElement);
+  }
+
   ngOnDestroy(): void {
     this.refreshSub?.unsubscribe();
+    this.completionAnimation.unregisterTarget(this.panelRef.nativeElement);
   }
 
   load(): void {

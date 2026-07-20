@@ -1,4 +1,18 @@
+/* The host itself (not just the .task-card box inside) is what collapses when a task
+   is completed, so the row's flex gap in the surrounding list closes up smoothly too. */
+:host {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.6s ease;
+}
+
+:host(.is-leaving) {
+  grid-template-rows: 0fr;
+}
+
 .task-card {
+  min-height: 0;
+  overflow: hidden;
   background: var(--color-surface);
   border: var(--border-width, 1px) solid var(--color-border);
   border-radius: var(--radius);
@@ -9,6 +23,17 @@
   &:hover {
     transform: translateY(-2px);
   }
+}
+
+/* Shrinks the card and slides it toward the Completed Today panel (--leave-dx/--leave-dy,
+   set in TaskCardComponent from the panel's actual on-screen position) in step with the
+   grid-row collapse above and the checkmark ghost flying the same path. */
+:host(.is-leaving) .task-card,
+:host(.is-leaving) .task-card:hover {
+  transition: transform 0.6s cubic-bezier(0.55, 0, 0.85, 0.35), opacity 0.45s ease-in;
+  transform: translate(var(--leave-dx, 0), var(--leave-dy, 0)) scale(0.12);
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Long-Term: legendary-item shimmer frame instead of relying on a black backdrop for drama */

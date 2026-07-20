@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -16,6 +16,7 @@ import {
 } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
 import { TaskRefreshService } from '../../core/services/task-refresh.service';
+import { TaskCompletionAnimationService } from '../../core/services/task-completion-animation.service';
 import { FrequencyPieComponent } from './frequency-pie.component';
 
 @Component({
@@ -23,12 +24,17 @@ import { FrequencyPieComponent } from './frequency-pie.component';
   standalone: true,
   imports: [ReactiveFormsModule, FrequencyPieComponent],
   templateUrl: './task-card.component.html',
-  styleUrl: './task-card.component.scss'
+  styleUrl: './task-card.component.scss',
+  host: {
+    '[class.is-leaving]': 'leaving()'
+  }
 })
 export class TaskCardComponent {
   private fb = inject(FormBuilder);
   private taskService = inject(TaskService);
   private taskRefresh = inject(TaskRefreshService);
+  private completionAnimation = inject(TaskCompletionAnimationService);
+  private elementRef = inject(ElementRef<HTMLElement>);
 
   @Input({ required: true }) task!: Task;
   @Output() completed = new EventEmitter<void>();
@@ -50,6 +56,7 @@ export class TaskCardComponent {
   confirmingDelete = signal(false);
   deleting = signal(false);
   deleteError = signal<string | null>(null);
+  leaving = signal(false);
   private closeTimeout?: ReturnType<typeof setTimeout>;
   private completeErrorTimeout?: ReturnType<typeof setTimeout>;
 
@@ -123,9 +130,10 @@ export class TaskCardComponent {
         // done for its period - a Weekly task with targetCount > 1 rightly stays
         // in must-do after a single completion, and shouldn't look like it left.
         if (isDoneForCurrentPeriod(updatedTask)) {
-          this.launchCompletionFly(origin);
+          this.playLeaveAnimation(origin);
+        } else {
+          this.completed.emit();
         }
-        this.completed.emit();
       },
       error: (err: HttpErrorResponse) => {
         this.completing.set(false);
@@ -136,16 +144,35 @@ export class TaskCardComponent {
   }
 
   /**
-   * Sends a little glowing checkmark flying from the Complete button toward the
-   * bottom-right corner, where the Completed Today panel lives - purely decorative,
-   * independent of the actual completion request.
+   * Plays the "leaving the list" sequence: the whole card shrinks and slides toward
+   * the Completed Today panel while a glowing checkmark flies from the Complete
+   * button to the same spot. `completed` (which triggers the actual list/panel
+   * refresh via TaskRefreshService) only fires once the flight lands naturally, so
+   * the Completed Today panel updates in step with the animation instead of jumping
+   * ahead of it while the backend request has already resolved.
+   *
+   * Only one flight plays at a time app-wide (see TaskCompletionAnimationService). If
+   * another task is completed before this one lands, this flight is force-finished
+   * (skipped) immediately: its ghost is torn down without ever emitting `completed`,
+   * so the Completed Today panel doesn't update this task's row until some other
+   * completion lands and refreshes everything - it never shows a task before its own
+   * animation caught up. The card itself keeps collapsing via its own CSS transition
+   * regardless, since `leaving` was already set.
    */
-  private launchCompletionFly(origin: HTMLElement): void {
-    const rect = origin.getBoundingClientRect();
-    const originX = rect.left + rect.width / 2;
-    const originY = rect.top + rect.height / 2;
-    const targetX = window.innerWidth - 150;
-    const targetY = window.innerHeight - 30;
+  private playLeaveAnimation(origin: HTMLElement): void {
+    const hostEl = this.elementRef.nativeElement;
+    const cardRect = hostEl.getBoundingClientRect();
+    const targetRect = this.completionAnimation.getTargetRect();
+    const targetX = targetRect ? targetRect.left + targetRect.width / 2 : window.innerWidth - 150;
+    const targetY = targetRect ? targetRect.top + targetRect.height / 2 : window.innerHeight - 30;
+
+    hostEl.style.setProperty('--leave-dx', `${targetX - (cardRect.left + cardRect.width / 2)}px`);
+    hostEl.style.setProperty('--leave-dy', `${targetY - (cardRect.top + cardRect.height / 2)}px`);
+    this.leaving.set(true);
+
+    const btnRect = origin.getBoundingClientRect();
+    const originX = btnRect.left + btnRect.width / 2;
+    const originY = btnRect.top + btnRect.height / 2;
 
     const ghost = document.createElement('div');
     ghost.className = 'task-complete-ghost';
@@ -156,8 +183,20 @@ export class TaskCardComponent {
     ghost.style.setProperty('--dy', `${targetY - originY}px`);
     document.body.appendChild(ghost);
 
+    let landTimeout: ReturnType<typeof setTimeout>;
+    const cleanup = () => {
+      clearTimeout(landTimeout);
+      ghost.remove();
+    };
+
+    this.completionAnimation.claim(cleanup);
+
     requestAnimationFrame(() => ghost.classList.add('is-flying'));
-    setTimeout(() => ghost.remove(), 800);
+    landTimeout = setTimeout(() => {
+      cleanup();
+      this.completionAnimation.clear(cleanup);
+      this.completed.emit();
+    }, 700);
   }
 
   startEdit(): void {
