@@ -245,7 +245,7 @@
   transition: outline-color 0.15s ease, filter 0.15s ease;
 
   &:hover:not(:disabled) {
-    outline-color: var(--color-accent);
+    outline-color: var(--color-on-accent);
     filter: brightness(1.1);
   }
 
